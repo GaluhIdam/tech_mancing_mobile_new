@@ -1,0 +1,49 @@
+# Flutter and Dart specific
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.idea/
+
+# iOS specific
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/.last_build_id
+ios/Flutter/Generated.xcconfig
+ios/Flutter/App.framework/
+ios/Flutter/Flutter.framework/
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/app.flx
+ios/Flutter/app.framework
+ios/Flutter/app_bundle
+
+# Android specific
+android/build/
+android/gradle/
+android/.gradle/
+android/local.properties
+android/app/build/
+android/Flutter/.last_build_id
+android/Flutter/app.flx
+android/Flutter/app.framework
+android/Flutter/app_bundle
+
+# Visual Studio Code specific
+.vscode/
+
+# macOS
+.DS_Store
+
+# Android Studio
+.idea/
+
+# Gradle
+*.iml
+.gradle/
+build/
+
+# Local configuration files
+*.yaml
+*.iml
+*.lock
+.pub/
