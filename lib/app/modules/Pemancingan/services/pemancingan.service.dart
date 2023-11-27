@@ -20,8 +20,8 @@ class PemancinganService extends GetxService {
   final String urlKecamatan =
       'https://www.emsifa.com/api-wilayah-indonesia/api/districts/';
 
-  final String urlPemancingan = 'http://192.168.0.2:8000/api/pemancingan';
-  final String urlUser = 'http://192.168.0.2:8000/api/get-user';
+  final String urlPemancingan = 'http://192.168.212.118:8000/api/pemancingan';
+  final String urlUser = 'http://192.168.212.118:8000/api/get-user';
 
   //Get Provinsi
   Future<List<ProvinsiDto>> getProvinsi() async {

@@ -102,7 +102,7 @@ class PemancinganSayaView extends StatelessWidget {
                                     CardWidget(
                                       status: pemancingan.status,
                                       image:
-                                          'http://192.168.0.2:8000/api/images-pemancingan/${pemancingan.image}',
+                                          'http://192.168.212.118:8000/api/images-pemancingan/${pemancingan.image}',
                                       title: pemancingan.namaPemancingan,
                                       alamat: pemancingan.alamat,
                                       mulai: pemancingan.buka,

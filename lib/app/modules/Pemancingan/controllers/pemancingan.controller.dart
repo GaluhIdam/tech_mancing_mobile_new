@@ -276,7 +276,7 @@ class PemancinganContoller extends GetxController {
       await pemancinganService.getDetailPemancingan(id).then((value) async {
         idPemancingan = value.data.id.toString();
         urlImage.value =
-            'http://192.168.0.2:8000/api/images-pemancingan/${value.data.image}';
+            'http://192.168.212.118:8000/api/images-pemancingan/${value.data.image}';
         namaController.text = value.data.namaPemancingan;
         descriptionController.text = value.data.deskripsi;
         alamatController.text = value.data.alamat;

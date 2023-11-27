@@ -139,7 +139,7 @@ class AcaraController extends GetxController {
                 value.data.pemancinganAcara.namaPemancingan,
             pemancinganSelectedId.value = value.data.idPemancingan.toString(),
             urlImage.value =
-                'http://192.168.0.2:8000/api/images-acara/${value.data.gambar}',
+                'http://192.168.212.118:8000/api/images-acara/${value.data.gambar}',
             namaController.text = value.data.namaAcara,
             descriptionController.text = value.data.deskripsi,
             startDateController.text =

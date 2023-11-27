@@ -42,8 +42,8 @@ android/Flutter/app_bundle
 .gradle/
 build/
 
-# Local configuration files
-*.yaml
-*.iml
-*.lock
-.pub/
+# # Local configuration files
+# *.yaml
+# *.iml
+# *.lock
+# .pub/
