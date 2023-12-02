@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan.controller.dart';
+import 'package:tech_mancing/app/layout/controllers/layout.controller.dart';
+import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan-saya.controller.dart';
 
-class CardWidget extends StatelessWidget {
+class CardForUserWidget extends StatelessWidget {
   final int id;
-  final int? status;
+  final int? meter;
   final String? image;
   final String title;
   final String alamat;
@@ -14,11 +15,12 @@ class CardWidget extends StatelessWidget {
   final String kecamatan;
   final String kota;
   final String provinsi;
+  final double? rate;
 
-  CardWidget({
+  CardForUserWidget({
     Key? key, // Add the key parameter
     required this.id,
-    required this.status,
+    required this.meter,
     required this.image,
     required this.title,
     required this.alamat,
@@ -28,10 +30,12 @@ class CardWidget extends StatelessWidget {
     required this.kecamatan,
     required this.kota,
     required this.provinsi,
+    required this.rate,
   }) : super(key: key); // Call the superclass constructor
 
-  final PemancinganContoller pemancinganContoller =
-      Get.put(PemancinganContoller());
+  final PemancinganSayaContoller pemancinganSayaContoller =
+      Get.put(PemancinganSayaContoller());
+  final LayoutController layoutController = Get.put(LayoutController());
 
   @override
   Widget build(BuildContext context) {
@@ -51,50 +55,62 @@ class CardWidget extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: Column(
               children: <Widget>[
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 7),
-                  decoration: BoxDecoration(
-                    color: status == null
-                        ? const Color.fromRGBO(215, 223, 0, 1)
-                        : status == true
-                            ? const Color.fromRGBO(3, 165, 0, 1)
-                            : const Color.fromRGBO(177, 0, 0, 1),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                    status == null
-                        ? "Menunggu Persetujuan"
-                        : status == 1
-                            ? "Disetujui"
-                            : "Ditolak",
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
                 SizedBox(
                   width: double.infinity,
                   height: 200.0,
-                  child: Image.network(
-                    image!,
-                    fit: BoxFit.cover,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        image!,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 7, top: 10, bottom: 5),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.location_pin,
+                        size: 16.0,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(
+                          width: 1), // Add some space between the icon and text
+                      Text(
+                        "$meter meter",
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Container(
                   alignment: Alignment.topLeft,
-                  margin: const EdgeInsets.only(bottom: 5, top: 5),
+                  margin: const EdgeInsets.only(
+                      bottom: 3, top: 0, left: 10, right: 10),
                   child: Text(
                     title,
                     textAlign: TextAlign.left,
                     style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
+                        color: Color.fromRGBO(4, 99, 128, 1),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
                 Container(
                   alignment: Alignment.topLeft,
-                  margin: const EdgeInsets.only(bottom: 5),
+                  margin: const EdgeInsets.only(left: 10, right: 10),
                   child: Text(
                     "Jam : $mulai WIB - $selesai WIB",
                     textAlign: TextAlign.left,
@@ -107,6 +123,8 @@ class CardWidget extends StatelessWidget {
                 ),
                 Container(
                   alignment: Alignment.topLeft,
+                  margin: const EdgeInsets.only(
+                      bottom: 5, top: 5, left: 10, right: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -160,8 +178,8 @@ class CardWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const Text(
-                      "Rate : 4.5",
+                    Text(
+                      "Rate : $rate",
                       style:
                           TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
                     ),
@@ -181,7 +199,8 @@ class CardWidget extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      pemancinganContoller.getPemancinganById(id);
+                      // pemancinganSayaContoller.getPemancinganById(id);
+                      layoutController.detailUserPemancinganPage();
                     },
                     child: const Text(
                       'Lihat',

@@ -7,7 +7,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:simple_ripple_animation/simple_ripple_animation.dart';
 import 'package:tech_mancing/app/layout/controllers/layout.controller.dart';
 import 'package:tech_mancing/app/modules/Home/controllers/home.controller.dart';
-import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan.controller.dart';
+import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan-saya.controller.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/models/kecamatan.dto.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/models/kota.dto.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/models/provinsi.dto.dart';
@@ -15,7 +15,8 @@ import 'dart:math' as math;
 
 class DaftarPemancinganView extends StatelessWidget {
   DaftarPemancinganView({super.key});
-  final PemancinganContoller controller = Get.put(PemancinganContoller());
+  final PemancinganSayaContoller controller =
+      Get.put(PemancinganSayaContoller());
   final LayoutController layoutController = Get.put(LayoutController());
   final HomeController controllerHome = Get.put(HomeController());
 

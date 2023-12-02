@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:tech_mancing/app/layout/controllers/layout.controller.dart';
-import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan.controller.dart';
-import 'package:tech_mancing/app/modules/Pemancingan/widgets/card.widget.dart';
+import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan-saya.controller.dart';
+import 'package:tech_mancing/app/modules/Pemancingan/widgets/card-by-user.widget.dart';
 
 class PemancinganSayaView extends StatelessWidget {
   PemancinganSayaView({super.key});
   final LayoutController layoutController = Get.put(LayoutController());
-  final PemancinganContoller pemancinganContoller =
-      Get.put(PemancinganContoller());
+  final PemancinganSayaContoller pemancinganSayaContoller =
+      Get.put(PemancinganSayaContoller());
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -38,27 +38,27 @@ class PemancinganSayaView extends StatelessWidget {
                     Container(
                       margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                       child: TextFormField(
-                        controller: pemancinganContoller.searchController,
+                        controller: pemancinganSayaContoller.searchController,
                         keyboardType: TextInputType.text,
-                        onChanged: (value) {
-                          pemancinganContoller.loading.value = false;
-                        },
                         onEditingComplete: () {
-                          pemancinganContoller.listPemancingan.clear();
-                          pemancinganContoller.getDetailUser().then((value) {
-                            pemancinganContoller
-                                .getPemancinganData(
-                                  pemancinganContoller.searchController.text,
-                                  '',
-                                  '1',
-                                  pemancinganContoller.idUser,
-                                  pemancinganContoller.isAdmin,
-                                  pemancinganContoller.paginate.toString(),
-                                )
-                                .then((value) =>
-                                    pemancinganContoller.loading.value = true);
-                          });
+                          pemancinganSayaContoller.loading.value = false;
                           FocusManager.instance.primaryFocus?.unfocus();
+                          pemancinganSayaContoller.listPemancinganByUser
+                              .clear();
+                          pemancinganSayaContoller
+                              .getDetailUser()
+                              .then((value) {
+                            pemancinganSayaContoller
+                                .getDataPemancinganByUser(
+                                  pemancinganSayaContoller
+                                      .searchController.text,
+                                  '1',
+                                  pemancinganSayaContoller.idUser,
+                                  pemancinganSayaContoller.paginate.toString(),
+                                )
+                                .then((value) => pemancinganSayaContoller
+                                    .loading.value = true);
+                          });
                         },
                         decoration: const InputDecoration(
                             labelText: "cari pemancingan terdekat...",
@@ -79,7 +79,7 @@ class PemancinganSayaView extends StatelessWidget {
               body: RefreshIndicator(
                   child: ListView(children: [
                     Obx(() {
-                      if (pemancinganContoller.loading.value == false) {
+                      if (pemancinganSayaContoller.loading.value == false) {
                         return Container(
                           margin: const EdgeInsets.only(top: 20.0),
                           child: const Center(
@@ -88,7 +88,8 @@ class PemancinganSayaView extends StatelessWidget {
                         );
                       } else {
                         return Column(
-                          children: pemancinganContoller.listPemancingan.isEmpty
+                          children: pemancinganSayaContoller
+                                  .listPemancinganByUser.isEmpty
                               ? [
                                   Container(
                                     margin: const EdgeInsets.only(top: 20),
@@ -98,11 +99,12 @@ class PemancinganSayaView extends StatelessWidget {
                                 ]
                               : [
                                   for (var pemancingan
-                                      in pemancinganContoller.listPemancingan)
-                                    CardWidget(
+                                      in pemancinganSayaContoller
+                                          .listPemancinganByUser)
+                                    CardByUserWidget(
                                       status: pemancingan.status,
                                       image:
-                                          'http://192.168.212.118:8000/api/images-pemancingan/${pemancingan.image}',
+                                          'http://192.168.0.2:8000/api/images-pemancingan/${pemancingan.image}',
                                       title: pemancingan.namaPemancingan,
                                       alamat: pemancingan.alamat,
                                       mulai: pemancingan.buka,
@@ -111,10 +113,10 @@ class PemancinganSayaView extends StatelessWidget {
                                       kecamatan: pemancingan.kecamatan,
                                       kota: pemancingan.kota,
                                       provinsi: pemancingan.provinsi,
-                                      id: pemancingan.id!,
+                                      id: pemancingan.id,
                                     ),
                                   Obx(() {
-                                    if (pemancinganContoller
+                                    if (pemancinganSayaContoller
                                             .loadingMore.value ==
                                         false) {
                                       return Container(
@@ -129,10 +131,10 @@ class PemancinganSayaView extends StatelessWidget {
                                     }
                                   }),
                                   Obx(() {
-                                    if (pemancinganContoller
-                                            .totalDataPemancingan >
-                                        pemancinganContoller
-                                            .listPemancingan.length) {
+                                    if (pemancinganSayaContoller
+                                            .totalDataPemancinganByUser >
+                                        pemancinganSayaContoller
+                                            .listPemancinganByUser.length) {
                                       return Center(
                                           child: Container(
                                         margin: const EdgeInsets.only(
@@ -143,22 +145,22 @@ class PemancinganSayaView extends StatelessWidget {
                                                   MaterialStatePropertyAll(
                                                       Colors.transparent)),
                                           onPressed: () {
-                                            pemancinganContoller.page++;
-                                            pemancinganContoller
+                                            pemancinganSayaContoller.page++;
+                                            pemancinganSayaContoller
                                                 .loadingMore.value = false;
-                                            pemancinganContoller
-                                                .getPemancinganData(
-                                                  pemancinganContoller
+                                            pemancinganSayaContoller
+                                                .getDataPemancinganByUser(
+                                                  pemancinganSayaContoller
                                                       .searchController.text,
-                                                  '',
-                                                  '${pemancinganContoller.page}',
-                                                  pemancinganContoller.idUser,
-                                                  pemancinganContoller.isAdmin,
-                                                  pemancinganContoller.paginate
+                                                  '${pemancinganSayaContoller.page}',
+                                                  pemancinganSayaContoller
+                                                      .idUser,
+                                                  pemancinganSayaContoller
+                                                      .paginate
                                                       .toString(),
                                                 )
                                                 .then((value) =>
-                                                    pemancinganContoller
+                                                    pemancinganSayaContoller
                                                         .loadingMore
                                                         .value = true);
                                           },
@@ -178,23 +180,23 @@ class PemancinganSayaView extends StatelessWidget {
                     })
                   ]),
                   onRefresh: () async {
-                    pemancinganContoller.listPemancingan.clear();
-                    pemancinganContoller.page = 1;
-                    await pemancinganContoller.getDetailUser().then((value) {
-                      pemancinganContoller
-                          .getPemancinganData(
-                            pemancinganContoller.searchController.text,
-                            '',
-                            '${pemancinganContoller.page}',
-                            pemancinganContoller.idUser,
-                            pemancinganContoller.isAdmin,
-                            pemancinganContoller.paginate.toString(),
+                    pemancinganSayaContoller.listPemancinganByUser.clear();
+                    pemancinganSayaContoller.page = 1;
+                    await pemancinganSayaContoller
+                        .getDetailUser()
+                        .then((value) {
+                      pemancinganSayaContoller
+                          .getDataPemancinganByUser(
+                            pemancinganSayaContoller.searchController.text,
+                            '${pemancinganSayaContoller.page}',
+                            pemancinganSayaContoller.idUser,
+                            pemancinganSayaContoller.paginate.toString(),
                           )
                           .then((value) =>
-                              pemancinganContoller.loading.value = true);
+                              pemancinganSayaContoller.loading.value = true);
                     });
                   })),
         ),
-        onWillPop: () async => await pemancinganContoller.onWillPop());
+        onWillPop: () async => await pemancinganSayaContoller.onWillPop());
   }
 }

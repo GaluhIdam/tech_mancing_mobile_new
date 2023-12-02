@@ -12,9 +12,9 @@ import 'package:http/http.dart' as http;
 class AcaraService extends GetxService {
   final AuthService authService = Get.put(AuthService());
 
-  final String urlAcara = 'http://192.168.212.118:8000/api/acara';
-  final String urlAcaraUser = 'http://192.168.212.118:8000/api/acara-user/';
-  final String urlAcaraDetail = 'http://192.168.212.118:8000/api/acara/';
+  final String urlAcara = 'http://192.168.0.2:8000/api/acara';
+  final String urlAcaraUser = 'http://192.168.0.2:8000/api/acara-user/';
+  final String urlAcaraDetail = 'http://192.168.0.2:8000/api/acara/';
 
   //Get Acara By User
   Future<ListAcaraDto> getAcara(

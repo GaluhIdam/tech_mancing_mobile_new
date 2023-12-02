@@ -14,7 +14,7 @@ import 'package:tech_mancing/app/modules/Pemancingan/models/pemancingan.dto.dart
 import 'package:tech_mancing/app/modules/Pemancingan/models/provinsi.dto.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/services/pemancingan.service.dart';
 
-class PemancinganContoller extends GetxController {
+class PemancinganSayaContoller extends GetxController {
   final PemancinganService pemancinganService = Get.put(PemancinganService());
   final AuthService authService = Get.put(AuthService());
   final LayoutController layoutController = Get.put(LayoutController());
@@ -35,10 +35,10 @@ class PemancinganContoller extends GetxController {
 
   Rx<LatLng> markerLocation = const LatLng(0, 0).obs;
 
-  final List<DatumListPemancingan> listPemancingan =
+  final List<DatumListPemancingan> listPemancinganByUser =
       <DatumListPemancingan>[].obs;
 
-  Rx<int> totalDataPemancingan = 0.obs;
+  Rx<int> totalDataPemancinganByUser = 0.obs;
 
   // Kategori
   final List<String> kategori = ['Keluarga', 'Harian'].obs;
@@ -83,8 +83,8 @@ class PemancinganContoller extends GetxController {
   void onInit() {
     super.onInit();
     getDetailUser()
-        .then((value) => getPemancinganData(searchController.text, '', '$page',
-            idUser, isAdmin, paginate.toString()))
+        .then((value) => getDataPemancinganByUser(
+            searchController.text, '$page', idUser, paginate.toString()))
         .then((value) => loading.value = true);
     getProvinsiData();
     resetDropdown();
@@ -94,10 +94,9 @@ class PemancinganContoller extends GetxController {
           scrollController.position.maxScrollExtent) {
         page++;
         getDetailUser()
-            .then((value) => getPemancinganData(searchController.text, '',
-                '$page', idUser, isAdmin, paginate.toString()))
+            .then((value) => getDataPemancinganByUser(
+                searchController.text, '$page', idUser, paginate.toString()))
             .then((value) => loading.value = true);
-        print('offsie sit');
       }
     });
   }
@@ -194,21 +193,21 @@ class PemancinganContoller extends GetxController {
     kota.clear();
     kecamatan.clear();
     getProvinsiData();
-    listPemancingan.clear();
+    listPemancinganByUser.clear();
   }
 
-  //Get Pemancingan
-  Future<void> getPemancinganData(String search, String status, String page,
-      String idUser, String isAdmin, String paginate) async {
+  //Get Pemancingan By User
+  Future<void> getDataPemancinganByUser(
+      String search, String page, String idUser, String paginate) async {
     try {
       await pemancinganService
-          .getPemancingan(search, status, page, idUser, isAdmin, paginate)
+          .getPemancinganByUser(search, page, idUser, paginate)
           .then((value) => {
-                totalDataPemancingan.value = value.data.total,
-                listPemancingan.addAll(value.data.data),
+                totalDataPemancinganByUser.value = value.data.total,
+                listPemancinganByUser.addAll(value.data.data),
               });
     } catch (e) {
-      print('Error fetching Pemancingan: $e');
+      print('Error fetching Pemancingan by user: $e');
     }
   }
 
@@ -245,9 +244,9 @@ class PemancinganContoller extends GetxController {
                   content: Text("Registrasi pemancingan berhasil!")));
               layoutController.pemancinganSayaPage();
               resetDropdown();
-              listPemancingan.clear();
-              getPemancinganData(
-                  '', '', '1', idUser, isAdmin, paginate.toString());
+              listPemancinganByUser.clear();
+              getDataPemancinganByUser(
+                  searchController.text, '$page', idUser, paginate.toString());
             } else {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   duration: Duration(seconds: 2),
@@ -276,7 +275,7 @@ class PemancinganContoller extends GetxController {
       await pemancinganService.getDetailPemancingan(id).then((value) async {
         idPemancingan = value.data.id.toString();
         urlImage.value =
-            'http://192.168.212.118:8000/api/images-pemancingan/${value.data.image}';
+            'http://192.168.0.2:8000/api/images-pemancingan/${value.data.image}';
         namaController.text = value.data.namaPemancingan;
         descriptionController.text = value.data.deskripsi;
         alamatController.text = value.data.alamat;
@@ -353,8 +352,8 @@ class PemancinganContoller extends GetxController {
                   content: Text("Update pemancingan berhasil!")));
               layoutController.pemancinganSayaPage();
               resetDropdown();
-              getPemancinganData(
-                  '', '', '1', idUser, isAdmin, paginate.toString());
+              getDataPemancinganByUser(
+                  searchController.text, '$page', idUser, paginate.toString());
             } else {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   duration: Duration(seconds: 2),
@@ -377,11 +376,11 @@ class PemancinganContoller extends GetxController {
   }
 
   void getPemancinganAll() async {
-    listPemancingan.clear();
+    listPemancinganByUser.clear();
     page = 1;
     await getDetailUser().then((value) {
-      getPemancinganData(searchController.text, '', '1', idUser, isAdmin,
-              paginate.toString())
+      getDataPemancinganByUser(
+              searchController.text, '$page', idUser, paginate.toString())
           .then((value) => loading.value = true);
     });
   }

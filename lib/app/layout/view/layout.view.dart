@@ -7,6 +7,7 @@ import 'package:tech_mancing/app/modules/Acara/views/daftar-acara.view.dart';
 import 'package:tech_mancing/app/modules/Acara/views/detail-acara-view.dart';
 import 'package:tech_mancing/app/modules/Home/controllers/home.controller.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/views/daftar-pemacingan.view.dart';
+import 'package:tech_mancing/app/modules/Pemancingan/views/detail-pemancingan-for-user.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/views/detail-pemancingan.view.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/views/pemancingan-saya.view.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/views/pemancingan.view.dart';
@@ -71,6 +72,9 @@ class LayoutView extends StatelessWidget {
               case AppRoutes.detailPemancingan:
                 controller.startRoute.value = false;
                 return DetailPemancinganView();
+              case AppRoutes.detailUserPemancingan:
+                controller.startRoute.value = false;
+                return DetailPemancinganForUserView();
 
               default:
                 return HomeView();

@@ -6,16 +6,17 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:tech_mancing/app/layout/controllers/layout.controller.dart';
 import 'package:tech_mancing/app/modules/Acara/controllers/acara.controller.dart';
-import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan.controller.dart';
+import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan-saya.controller.dart';
 
 class AcaraDetailView extends StatelessWidget {
   AcaraDetailView({super.key});
 
-  final PemancinganContoller controller = Get.put(PemancinganContoller());
+  final PemancinganSayaContoller controller =
+      Get.put(PemancinganSayaContoller());
   final LayoutController layoutController = Get.put(LayoutController());
   final AcaraController acaraController = Get.put(AcaraController());
-  final PemancinganContoller pemancinganController =
-      Get.put(PemancinganContoller());
+  final PemancinganSayaContoller pemancinganController =
+      Get.put(PemancinganSayaContoller());
 
   @override
   Widget build(BuildContext context) {
@@ -321,7 +322,8 @@ class AcaraDetailView extends StatelessWidget {
                               child: Obx(
                                 () => DropdownButtonFormField(
                                   isExpanded: true,
-                                  items: pemancinganController.listPemancingan
+                                  items: pemancinganController
+                                      .listPemancinganByUser
                                       .map((value) => DropdownMenuItem<dynamic>(
                                             value: value,
                                             child: Text(value.namaPemancingan),

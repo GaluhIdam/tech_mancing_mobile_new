@@ -76,6 +76,13 @@ class LayoutController extends GetxController {
     Get.back();
   }
 
+  void detailUserPemancinganPage() {
+    currentRoute.value = AppRoutes.detailUserPemancingan;
+    title.value = "Detail Pemancingan";
+    myIcon.value = const Icon(Icons.phishing);
+    Get.back();
+  }
+
   Future<void> getUserDetail() async {
     try {
       await this.authService.getUserDetail().then((value) {

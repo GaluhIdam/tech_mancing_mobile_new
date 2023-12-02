@@ -20,8 +20,12 @@ class PemancinganService extends GetxService {
   final String urlKecamatan =
       'https://www.emsifa.com/api-wilayah-indonesia/api/districts/';
 
-  final String urlPemancingan = 'http://192.168.212.118:8000/api/pemancingan';
-  final String urlUser = 'http://192.168.212.118:8000/api/get-user';
+  final String urlPemancingan = 'http://192.168.0.2:8000/api/pemancingan';
+  final String urlPemancinganByUser =
+      'http://192.168.0.2:8000/api/pemancingan-by-user';
+  final String urlPemancinganForUser =
+      'http://192.168.0.2:8000/api/pemancingan-for-user';
+  final String urlUser = 'http://192.168.0.2:8000/api/get-user';
 
   //Get Provinsi
   Future<List<ProvinsiDto>> getProvinsi() async {
@@ -121,6 +125,64 @@ class PemancinganService extends GetxService {
       'isAdmin': isAdmin,
       'id_user': idUser,
       'paginate': paginate,
+    };
+    final response = await http.get(
+      uri.replace(queryParameters: queryParams),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${tokenData['token']}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final res = ListPemancinganDto.fromJson(json.decode(response.body));
+      return res;
+    } else {
+      throw Exception(
+          'Failed to fetch pemancingan data: ${response.statusCode}');
+    }
+  }
+
+  //Get Pemancingan By User
+  Future<ListPemancinganDto> getPemancinganByUser(
+      String search, String page, String idUser, String paginate) async {
+    final tokenData = await authService.readToken();
+
+    final uri = Uri.parse('$urlPemancinganByUser/$idUser');
+    final queryParams = {
+      'search': search,
+      'page': page,
+      'paginate': paginate,
+    };
+    final response = await http.get(
+      uri.replace(queryParameters: queryParams),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${tokenData['token']}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final res = ListPemancinganDto.fromJson(json.decode(response.body));
+      return res;
+    } else {
+      throw Exception(
+          'Failed to fetch pemancingan data: ${response.statusCode}');
+    }
+  }
+
+  //Get Pemancingan For User
+  Future<ListPemancinganDto> getPemancinganForUser(
+      String search, page, paginate, latitude, longitude) async {
+    final tokenData = await authService.readToken();
+
+    final uri = Uri.parse(urlPemancinganForUser);
+    final queryParams = {
+      'search': search,
+      'page': page,
+      'paginate': paginate,
+      'latitude': latitude,
+      'longitude': longitude,
     };
     final response = await http.get(
       uri.replace(queryParameters: queryParams),

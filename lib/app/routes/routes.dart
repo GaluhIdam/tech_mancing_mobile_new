@@ -6,6 +6,7 @@ import 'package:tech_mancing/app/modules/Acara/views/daftar-acara.view.dart';
 import 'package:tech_mancing/app/modules/Home/views/home.view.dart';
 import 'package:tech_mancing/app/modules/Login/views/login.view.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/views/daftar-pemacingan.view.dart';
+import 'package:tech_mancing/app/modules/Pemancingan/views/detail-pemancingan-for-user.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/views/detail-pemancingan.view.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/views/pemancingan-saya.view.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/views/pemancingan.view.dart';
@@ -29,6 +30,7 @@ class AppRoutes {
   static const String pemancingan = '/pemancingan';
   static const String daftarPemancingan = '/daftar-pemancingan';
   static const String detailPemancingan = '/detail-pemancingan';
+  static const String detailUserPemancingan = '/detail-pemancingan-user';
   static const String pemancinganSaya = '/pemancingan-saya';
 
   static const String geo = '/geo';
@@ -53,6 +55,9 @@ class AppPages {
         name: AppRoutes.daftarPemancingan, page: () => DaftarPemancinganView()),
     GetPage(
         name: AppRoutes.detailPemancingan, page: () => DetailPemancinganView()),
+    GetPage(
+        name: AppRoutes.detailUserPemancingan,
+        page: () => DetailPemancinganForUserView()),
     GetPage(name: AppRoutes.pemancinganSaya, page: () => PemancinganSayaView()),
 
     // GetPage(name: AppRoutes.geo, page: () => const GeolocatorWidget()),

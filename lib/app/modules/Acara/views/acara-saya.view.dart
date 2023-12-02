@@ -98,7 +98,7 @@ class AcaraSayaView extends StatelessWidget {
                               EventWidget(
                                 status: acara.status,
                                 image:
-                                    'http://192.168.212.118:8000/api/images-acara/${acara.gambar}',
+                                    'http://192.168.0.2:8000/api/images-acara/${acara.gambar}',
                                 title: acara.namaAcara,
                                 description: acara.deskripsi,
                                 pemancingan:
