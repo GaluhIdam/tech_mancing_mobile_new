@@ -37,14 +37,6 @@ class PemancinganUserController extends GetxController {
   void onInit() {
     super.onInit();
     try {
-      getDataPemancinganForUser(
-              searchController.text,
-              '$page',
-              paginate.toString(),
-              homeController.currentLocation.value!.latitude.toString(),
-              homeController.currentLocation.value!.longitude.toString())
-          .then((value) => loading.value = true);
-
       scrollController.addListener(() {
         loading.value = false;
         if (scrollController.position.pixels ==

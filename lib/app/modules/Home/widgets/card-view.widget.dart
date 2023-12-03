@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan-saya.controller.dart';
+import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan-detail.controller.dart';
 
 class CardViewWidget extends StatelessWidget {
   final int id;
@@ -32,8 +32,8 @@ class CardViewWidget extends StatelessWidget {
     required this.rate,
   }) : super(key: key); // Call the superclass constructor
 
-  final PemancinganSayaContoller pemancinganSayaContoller =
-      Get.put(PemancinganSayaContoller());
+  final PemancinganDetailController pemancinganDetailController =
+      Get.put(PemancinganDetailController());
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +187,7 @@ class CardViewWidget extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  pemancinganSayaContoller.getPemancinganById(id);
+                  pemancinganDetailController.getPemancinganById(id);
                 },
                 child: const Text(
                   'Lihat',

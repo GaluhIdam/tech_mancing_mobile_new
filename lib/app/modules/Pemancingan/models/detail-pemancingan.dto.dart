@@ -55,11 +55,12 @@ class Data {
   String latitude;
   String longitude;
   dynamic pesan;
-  dynamic status;
+  int status;
   DateTime createdAt;
   DateTime updatedAt;
-  UserPemancingan userPemancingan;
+  User userPemancingan;
   List<dynamic> acaraPemancingan;
+  List<KomentarPemancingan> komentarPemancingan;
 
   Data({
     required this.id,
@@ -86,6 +87,7 @@ class Data {
     required this.updatedAt,
     required this.userPemancingan,
     required this.acaraPemancingan,
+    required this.komentarPemancingan,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -111,9 +113,12 @@ class Data {
         status: json["status"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
-        userPemancingan: UserPemancingan.fromJson(json["user_pemancingan"]),
+        userPemancingan: User.fromJson(json["user_pemancingan"]),
         acaraPemancingan:
             List<dynamic>.from(json["acara_pemancingan"].map((x) => x)),
+        komentarPemancingan: List<KomentarPemancingan>.from(
+            json["komentar_pemancingan"]
+                .map((x) => KomentarPemancingan.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -141,10 +146,57 @@ class Data {
         "updated_at": updatedAt.toIso8601String(),
         "user_pemancingan": userPemancingan.toJson(),
         "acara_pemancingan": List<dynamic>.from(acaraPemancingan.map((x) => x)),
+        "komentar_pemancingan":
+            List<dynamic>.from(komentarPemancingan.map((x) => x.toJson())),
       };
 }
 
-class UserPemancingan {
+class KomentarPemancingan {
+  int id;
+  int idPemancingan;
+  int idUser;
+  String komentar;
+  int rate;
+  DateTime createdAt;
+  DateTime updatedAt;
+  User userKomentar;
+
+  KomentarPemancingan({
+    required this.id,
+    required this.idPemancingan,
+    required this.idUser,
+    required this.komentar,
+    required this.rate,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.userKomentar,
+  });
+
+  factory KomentarPemancingan.fromJson(Map<String, dynamic> json) =>
+      KomentarPemancingan(
+        id: json["id"],
+        idPemancingan: json["id_pemancingan"],
+        idUser: json["id_user"],
+        komentar: json["komentar"],
+        rate: json["rate"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+        userKomentar: User.fromJson(json["user_komentar"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "id_pemancingan": idPemancingan,
+        "id_user": idUser,
+        "komentar": komentar,
+        "rate": rate,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+        "user_komentar": userKomentar.toJson(),
+      };
+}
+
+class User {
   int id;
   String role;
   String name;
@@ -154,7 +206,7 @@ class UserPemancingan {
   DateTime createdAt;
   DateTime updatedAt;
 
-  UserPemancingan({
+  User({
     required this.id,
     required this.role,
     required this.name,
@@ -165,8 +217,7 @@ class UserPemancingan {
     required this.updatedAt,
   });
 
-  factory UserPemancingan.fromJson(Map<String, dynamic> json) =>
-      UserPemancingan(
+  factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],
         role: json["role"],
         name: json["name"],

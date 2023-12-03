@@ -339,6 +339,9 @@ class DaftarAcaraView extends StatelessWidget {
                                   isExpanded: true,
                                   items: pemancinganController
                                       .listPemancinganByUser
+                                      .where((value) =>
+                                          value.status ==
+                                          1) // Filter based on status
                                       .map((value) => DropdownMenuItem<dynamic>(
                                             value: value.id,
                                             child: Text(value.namaPemancingan),

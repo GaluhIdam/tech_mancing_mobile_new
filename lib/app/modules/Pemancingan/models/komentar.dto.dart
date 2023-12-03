@@ -1,28 +1,26 @@
 // To parse this JSON data, do
 //
-//     final listPemancinganDto = listPemancinganDtoFromJson(jsonString);
+//     final komentarDto = komentarDtoFromJson(jsonString);
 
 import 'dart:convert';
 
-ListPemancinganDto listPemancinganDtoFromJson(String str) =>
-    ListPemancinganDto.fromJson(json.decode(str));
+KomentarDto komentarDtoFromJson(String str) =>
+    KomentarDto.fromJson(json.decode(str));
 
-String listPemancinganDtoToJson(ListPemancinganDto data) =>
-    json.encode(data.toJson());
+String komentarDtoToJson(KomentarDto data) => json.encode(data.toJson());
 
-class ListPemancinganDto {
+class KomentarDto {
   String message;
   int status;
   Data data;
 
-  ListPemancinganDto({
+  KomentarDto({
     required this.message,
     required this.status,
     required this.data,
   });
 
-  factory ListPemancinganDto.fromJson(Map<String, dynamic> json) =>
-      ListPemancinganDto(
+  factory KomentarDto.fromJson(Map<String, dynamic> json) => KomentarDto(
         message: json["message"],
         status: json["status"],
         data: Data.fromJson(json["data"]),
@@ -37,9 +35,9 @@ class ListPemancinganDto {
 
 class Data {
   int currentPage;
-  List<DatumListPemancingan> data;
+  List<DatumKomentar> data;
   String firstPageUrl;
-  dynamic from;
+  int from;
   int lastPage;
   String lastPageUrl;
   List<Link> links;
@@ -47,7 +45,7 @@ class Data {
   String path;
   int perPage;
   dynamic prevPageUrl;
-  dynamic to;
+  int to;
   int total;
 
   Data({
@@ -68,8 +66,8 @@ class Data {
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         currentPage: json["current_page"],
-        data: List<DatumListPemancingan>.from(
-            json["data"].map((x) => DatumListPemancingan.fromJson(x))),
+        data: List<DatumKomentar>.from(
+            json["data"].map((x) => DatumKomentar.fromJson(x))),
         firstPageUrl: json["first_page_url"],
         from: json["from"],
         lastPage: json["last_page"],
@@ -100,124 +98,7 @@ class Data {
       };
 }
 
-class DatumListPemancingan {
-  int id;
-  int idUser;
-  String category;
-  String image;
-  String path;
-  String buka;
-  String tutup;
-  String namaPemancingan;
-  String deskripsi;
-  String idProvinsi;
-  String provinsi;
-  String idKota;
-  String kota;
-  String idKecamatan;
-  String kecamatan;
-  String alamat;
-  String latitude;
-  String longitude;
-  dynamic pesan;
-  int status;
-  DateTime createdAt;
-  DateTime updatedAt;
-  UserPemancingan userPemancingan;
-  List<dynamic> acaraPemancingan;
-  List<KomentarPemancingan> komentarPemancingan;
-
-  DatumListPemancingan({
-    required this.id,
-    required this.idUser,
-    required this.category,
-    required this.image,
-    required this.path,
-    required this.buka,
-    required this.tutup,
-    required this.namaPemancingan,
-    required this.deskripsi,
-    required this.idProvinsi,
-    required this.provinsi,
-    required this.idKota,
-    required this.kota,
-    required this.idKecamatan,
-    required this.kecamatan,
-    required this.alamat,
-    required this.latitude,
-    required this.longitude,
-    required this.pesan,
-    required this.status,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.userPemancingan,
-    required this.acaraPemancingan,
-    required this.komentarPemancingan,
-  });
-
-  factory DatumListPemancingan.fromJson(Map<String, dynamic> json) =>
-      DatumListPemancingan(
-        id: json["id"],
-        idUser: json["id_user"],
-        category: json["category"],
-        image: json["image"],
-        path: json["path"],
-        buka: json["buka"],
-        tutup: json["tutup"],
-        namaPemancingan: json["nama_pemancingan"],
-        deskripsi: json["deskripsi"],
-        idProvinsi: json["id_provinsi"],
-        provinsi: json["provinsi"],
-        idKota: json["id_kota"],
-        kota: json["kota"],
-        idKecamatan: json["id_kecamatan"],
-        kecamatan: json["kecamatan"],
-        alamat: json["alamat"],
-        latitude: json["latitude"],
-        longitude: json["longitude"],
-        pesan: json["pesan"],
-        status: json["status"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        userPemancingan: UserPemancingan.fromJson(json["user_pemancingan"]),
-        acaraPemancingan:
-            List<dynamic>.from(json["acara_pemancingan"].map((x) => x)),
-        komentarPemancingan: List<KomentarPemancingan>.from(
-            json["komentar_pemancingan"]
-                .map((x) => KomentarPemancingan.fromJson(x))),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "id_user": idUser,
-        "category": category,
-        "image": image,
-        "path": path,
-        "buka": buka,
-        "tutup": tutup,
-        "nama_pemancingan": namaPemancingan,
-        "deskripsi": deskripsi,
-        "id_provinsi": idProvinsi,
-        "provinsi": provinsi,
-        "id_kota": idKota,
-        "kota": kota,
-        "id_kecamatan": idKecamatan,
-        "kecamatan": kecamatan,
-        "alamat": alamat,
-        "latitude": latitude,
-        "longitude": longitude,
-        "pesan": pesan,
-        "status": status,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
-        "user_pemancingan": userPemancingan.toJson(),
-        "acara_pemancingan": List<dynamic>.from(acaraPemancingan.map((x) => x)),
-        "komentar_pemancingan":
-            List<dynamic>.from(komentarPemancingan.map((x) => x.toJson())),
-      };
-}
-
-class KomentarPemancingan {
+class DatumKomentar {
   int id;
   int idPemancingan;
   int idUser;
@@ -225,8 +106,9 @@ class KomentarPemancingan {
   int rate;
   DateTime createdAt;
   DateTime updatedAt;
+  UserKomentar userKomentar;
 
-  KomentarPemancingan({
+  DatumKomentar({
     required this.id,
     required this.idPemancingan,
     required this.idUser,
@@ -234,10 +116,10 @@ class KomentarPemancingan {
     required this.rate,
     required this.createdAt,
     required this.updatedAt,
+    required this.userKomentar,
   });
 
-  factory KomentarPemancingan.fromJson(Map<String, dynamic> json) =>
-      KomentarPemancingan(
+  factory DatumKomentar.fromJson(Map<String, dynamic> json) => DatumKomentar(
         id: json["id"],
         idPemancingan: json["id_pemancingan"],
         idUser: json["id_user"],
@@ -245,6 +127,7 @@ class KomentarPemancingan {
         rate: json["rate"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
+        userKomentar: UserKomentar.fromJson(json["user_komentar"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -255,10 +138,11 @@ class KomentarPemancingan {
         "rate": rate,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
+        "user_komentar": userKomentar.toJson(),
       };
 }
 
-class UserPemancingan {
+class UserKomentar {
   int id;
   String role;
   String name;
@@ -268,7 +152,7 @@ class UserPemancingan {
   DateTime createdAt;
   DateTime updatedAt;
 
-  UserPemancingan({
+  UserKomentar({
     required this.id,
     required this.role,
     required this.name,
@@ -279,8 +163,7 @@ class UserPemancingan {
     required this.updatedAt,
   });
 
-  factory UserPemancingan.fromJson(Map<String, dynamic> json) =>
-      UserPemancingan(
+  factory UserKomentar.fromJson(Map<String, dynamic> json) => UserKomentar(
         id: json["id"],
         role: json["role"],
         name: json["name"],

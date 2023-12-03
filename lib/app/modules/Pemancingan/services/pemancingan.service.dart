@@ -26,6 +26,7 @@ class PemancinganService extends GetxService {
   final String urlPemancinganForUser =
       'http://192.168.0.2:8000/api/pemancingan-for-user';
   final String urlUser = 'http://192.168.0.2:8000/api/get-user';
+  final String urlKomentarRate = 'http://192.168.0.2:8000/api/komentar-rate';
 
   //Get Provinsi
   Future<List<ProvinsiDto>> getProvinsi() async {
@@ -276,6 +277,29 @@ class PemancinganService extends GetxService {
       }
     } catch (e) {
       throw Exception('Error downloading image: $e');
+    }
+  }
+
+  //Create Komentar
+  Future<bool> createKomentar(
+      int id_pemancingan, int id_user, String komentar, int rate) async {
+    try {
+      final tokenData = await authService.readToken();
+      final bearerToken = tokenData['token'].toString();
+      final response = await http.post(
+          Uri.parse(
+              '${urlKomentarRate}?id_pemancingan=${id_pemancingan}&id_user=${id_user}&komentar=${komentar}&rate=${rate}'),
+          headers: {
+            'Authorization': 'Bearer $bearerToken',
+          });
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        print('Error: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      throw Exception('Error to creating komentar: $e');
     }
   }
 }
