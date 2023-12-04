@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
           } else {
             return GetMaterialApp(
               debugShowCheckedModeBanner: false,
-              title: "Application",
+              title: "Tech Mancing",
               initialRoute: AppRoutes.login,
               getPages: AppPages.pages,
               home: LoginView(),
