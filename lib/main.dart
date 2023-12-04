@@ -20,6 +20,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return FutureBuilder(
         future: Future.delayed(const Duration(seconds: 2)),
         builder: (context, snapshot) {
