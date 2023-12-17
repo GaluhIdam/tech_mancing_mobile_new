@@ -5,6 +5,8 @@ import 'package:tech_mancing/app/modules/Login/services/auth.service.dart';
 import 'package:tech_mancing/app/routes/routes.dart';
 import 'package:tech_mancing/app/widget/controllers/navigation.controller.dart';
 
+import '../models/UserDTO.dart';
+
 class LoginController extends GetxController {
   final AuthService authService = Get.put(AuthService());
   final GlobalKey<FormState> formLogin =
@@ -16,6 +18,17 @@ class LoginController extends GetxController {
 
   DateTime? currentBackPressTime;
 
+  Rx<Data> userData = Data(
+    id: 1,
+    role: '',
+    name: '',
+    noTelp: '',
+    email: '',
+    emailVerifiedAt: null,
+    createdAt: DateTime.now(),
+    updatedAt: DateTime.now(),
+  ).obs;
+
   RxBool loading = false.obs;
   RxBool logging = false.obs;
 
@@ -23,6 +36,7 @@ class LoginController extends GetxController {
   void onInit() {
     super.onInit();
     checkToken();
+    getUser();
   }
 
   // Check Token
@@ -102,5 +116,20 @@ class LoginController extends GetxController {
     }
     Get.back();
     return true;
+  }
+
+  Future<void> getUser() async {
+    await authService.getUserDetail().then((value) => {
+          userData.value = Data(
+            createdAt: value.data.createdAt,
+            email: value.data.email,
+            id: value.data.id,
+            name: value.data.name,
+            role: value.data.role,
+            noTelp: value.data.noTelp,
+            emailVerifiedAt: value.data.emailVerifiedAt,
+            updatedAt: value.data.updatedAt,
+          ),
+        });
   }
 }

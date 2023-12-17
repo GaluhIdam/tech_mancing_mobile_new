@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:tech_mancing/app/modules/Login/controllers/login.controller.dart';
 import 'package:tech_mancing/app/modules/Login/services/auth.service.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/models/list-pemancingan.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/services/pemancingan.service.dart';
@@ -14,6 +15,7 @@ import 'package:tech_mancing/app/modules/Pemancingan/services/pemancingan.servic
 class HomeController extends GetxController {
   final PemancinganService pemancinganService = Get.put(PemancinganService());
   final AuthService authService = Get.put(AuthService());
+  final LoginController loginController = Get.put(LoginController());
 
   final TextEditingController searchController = TextEditingController();
   final FocusNode focusNode = FocusNode();
@@ -109,12 +111,16 @@ class HomeController extends GetxController {
         _positionStreamSubscription = null;
       }).listen((position) {
         currentLocation.value = position;
-        getDataPemancinganForUser(
-            '',
-            '$page',
-            paginate.toString(),
-            currentLocation.value!.latitude.toString(),
-            currentLocation.value!.longitude.toString());
+        if (loginController.userData.value.role == 'user') {
+          getDataPemancinganForUser(
+              '',
+              '$page',
+              paginate.toString(),
+              currentLocation.value!.latitude.toString(),
+              currentLocation.value!.longitude.toString());
+        } else {
+          getDataPemancinganForAdmin('', '$page', paginate.toString());
+        }
       });
       update();
     } catch (e) {
@@ -176,6 +182,18 @@ class HomeController extends GetxController {
     }
   }
 
+  Future<void> getDataPemancinganForAdmin(
+      String search, String page, String paginate) async {
+    try {
+      final value = await pemancinganService.getPemancinganForAdmin(
+          search, page, paginate);
+      totalDataPemancingan.value = value.data.total;
+      listPemancingan.addAll(value.data.data);
+    } catch (e) {
+      print('Error fetching Pemancingan: $e');
+    }
+  }
+
   // Search
   Future<void> getDataPemancinganForUserSearch(String search, String page,
       String paginate, String latitude, String longitude) async {
@@ -190,12 +208,30 @@ class HomeController extends GetxController {
     }
   }
 
+  Future<void> getDataPemancinganForAdminSearch(
+      String search, String page, String paginate) async {
+    try {
+      listPemancinganSearch.clear();
+      final value = await pemancinganService.getPemancinganForAdmin(
+          search, page, paginate);
+      totalDataPemancinganSearch.value = value.data.total;
+      listPemancinganSearch.addAll(value.data.data);
+      loading.value = false;
+    } catch (e) {
+      print('Error fetching Pemancingan: $e');
+    }
+  }
+
   void onSearchQueryChanged(String query) {
-    getDataPemancinganForUserSearch(
-        query,
-        '$page',
-        paginate.toString(),
-        currentLocation.value!.latitude.toString(),
-        currentLocation.value!.longitude.toString());
+    if (loginController.userData.value.role == 'user') {
+      getDataPemancinganForUserSearch(
+          query,
+          '$page',
+          paginate.toString(),
+          currentLocation.value!.latitude.toString(),
+          currentLocation.value!.longitude.toString());
+    } else {
+      getDataPemancinganForAdminSearch(query, '$page', paginate.toString());
+    }
   }
 }

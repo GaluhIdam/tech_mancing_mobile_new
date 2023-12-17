@@ -55,7 +55,7 @@ class Data {
   String latitude;
   String longitude;
   dynamic pesan;
-  int status;
+  dynamic status;
   DateTime createdAt;
   DateTime updatedAt;
   User userPemancingan;

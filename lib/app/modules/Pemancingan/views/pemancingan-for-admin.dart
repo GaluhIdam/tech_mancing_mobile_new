@@ -7,23 +7,18 @@ import 'package:latlong2/latlong.dart';
 import 'package:simple_ripple_animation/simple_ripple_animation.dart';
 import 'package:tech_mancing/app/layout/controllers/layout.controller.dart';
 import 'package:tech_mancing/app/modules/Home/controllers/home.controller.dart';
-import 'package:tech_mancing/app/modules/Login/controllers/login.controller.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan-saya.controller.dart';
-import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan-user.controller.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/models/kecamatan.dto.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/models/kota.dto.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/models/provinsi.dto.dart';
 import 'dart:math' as math;
 
-class DetailPemancinganView extends StatelessWidget {
-  DetailPemancinganView({super.key});
+class PemancinganForAdmin extends StatelessWidget {
+  PemancinganForAdmin({super.key});
   final PemancinganSayaContoller controller =
       Get.put(PemancinganSayaContoller());
-  final PemancinganUserController userPemancinganController =
-      Get.put(PemancinganUserController());
   final LayoutController layoutController = Get.put(LayoutController());
   final HomeController controllerHome = Get.put(HomeController());
-  final LoginController loginController = Get.put(LoginController());
 
   @override
   Widget build(BuildContext context) {
@@ -67,17 +62,15 @@ class DetailPemancinganView extends StatelessWidget {
                                 );
                               }
                             }),
-                            if (loginController.userData.value.role == 'user')
-                              Container(
-                                margin:
-                                    const EdgeInsets.only(top: 5, bottom: 10),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    controller.pickFile(context);
-                                  },
-                                  child: const Text('Pilih Gambar'),
-                                ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 5, bottom: 10),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  controller.pickFile(context);
+                                },
+                                child: const Text('Pilih Gambar'),
                               ),
+                            ),
 
                             Container(
                               margin: const EdgeInsets.only(top: 20),
@@ -93,10 +86,6 @@ class DetailPemancinganView extends StatelessWidget {
                             Container(
                               margin: const EdgeInsets.only(top: 5),
                               child: TextFormField(
-                                enabled: loginController.userData.value.role ==
-                                        'user'
-                                    ? true
-                                    : false,
                                 keyboardType: TextInputType.name,
                                 controller: controller.namaController,
                                 validator: (value) {
@@ -138,11 +127,6 @@ class DetailPemancinganView extends StatelessWidget {
                                       margin: const EdgeInsets.only(
                                           top: 5, right: 5),
                                       child: TextFormField(
-                                        enabled: loginController
-                                                    .userData.value.role ==
-                                                'user'
-                                            ? true
-                                            : false,
                                         keyboardType: TextInputType.number,
                                         controller: controller.bukaController,
                                         validator: (value) {
@@ -184,11 +168,6 @@ class DetailPemancinganView extends StatelessWidget {
                                       margin: const EdgeInsets.only(
                                           top: 5, right: 5),
                                       child: TextFormField(
-                                        enabled: loginController
-                                                    .userData.value.role ==
-                                                'user'
-                                            ? true
-                                            : false,
                                         keyboardType: TextInputType.number,
                                         controller: controller.tutupController,
                                         validator: (value) {
@@ -235,16 +214,12 @@ class DetailPemancinganView extends StatelessWidget {
                                       return null;
                                     },
                                     isExpanded: true,
-                                    items:
-                                        loginController.userData.value.role ==
-                                                'user'
-                                            ? controller.kategori.map((value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text(value),
-                                                );
-                                              }).toList()
-                                            : null,
+                                    items: controller.kategori.map((value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
                                     onChanged: (String? selectedValue) {
                                       controller.selectedKategori.value =
                                           selectedValue!;
@@ -280,10 +255,6 @@ class DetailPemancinganView extends StatelessWidget {
                             Container(
                               margin: const EdgeInsets.only(top: 5),
                               child: TextFormField(
-                                enabled: loginController.userData.value.role ==
-                                        'user'
-                                    ? true
-                                    : false,
                                 keyboardType: TextInputType.name,
                                 controller: controller.descriptionController,
                                 maxLines: 5,
@@ -331,17 +302,12 @@ class DetailPemancinganView extends StatelessWidget {
                                       return null;
                                     },
                                     isExpanded: true,
-                                    items:
-                                        loginController.userData.value.role ==
-                                                'user'
-                                            ? controller.provinsi.map((value) {
-                                                return DropdownMenuItem<
-                                                    ProvinsiDto>(
-                                                  value: value,
-                                                  child: Text(value.name),
-                                                );
-                                              }).toList()
-                                            : null,
+                                    items: controller.provinsi.map((value) {
+                                      return DropdownMenuItem<ProvinsiDto>(
+                                        value: value,
+                                        child: Text(value.name),
+                                      );
+                                    }).toList(),
                                     onChanged: (ProvinsiDto? selectedValue) {
                                       controller.selectedProvinsi.value =
                                           selectedValue!;
@@ -392,16 +358,12 @@ class DetailPemancinganView extends StatelessWidget {
                                       return null;
                                     },
                                     isExpanded: true,
-                                    items: loginController
-                                                .userData.value.role ==
-                                            'user'
-                                        ? controller.kota.map((value) {
-                                            return DropdownMenuItem<KotaDto>(
-                                              value: value,
-                                              child: Text(value.name),
-                                            );
-                                          }).toList()
-                                        : null,
+                                    items: controller.kota.map((value) {
+                                      return DropdownMenuItem<KotaDto>(
+                                        value: value,
+                                        child: Text(value.name),
+                                      );
+                                    }).toList(),
                                     onChanged: (KotaDto? selectedValue) {
                                       controller
                                           .getKecamatanData(selectedValue!.id);
@@ -451,17 +413,12 @@ class DetailPemancinganView extends StatelessWidget {
                                       return null;
                                     },
                                     isExpanded: true,
-                                    items:
-                                        loginController.userData.value.role ==
-                                                'user'
-                                            ? controller.kecamatan.map((value) {
-                                                return DropdownMenuItem<
-                                                    KecamatanDto>(
-                                                  value: value,
-                                                  child: Text(value.name),
-                                                );
-                                              }).toList()
-                                            : null,
+                                    items: controller.kecamatan.map((value) {
+                                      return DropdownMenuItem<KecamatanDto>(
+                                        value: value,
+                                        child: Text(value.name),
+                                      );
+                                    }).toList(),
                                     onChanged: (KecamatanDto? selectedValue) {
                                       controller.selectedKecamatan.value =
                                           selectedValue!;
@@ -500,10 +457,6 @@ class DetailPemancinganView extends StatelessWidget {
                             Container(
                               margin: const EdgeInsets.only(top: 5),
                               child: TextFormField(
-                                enabled: loginController.userData.value.role ==
-                                        'user'
-                                    ? true
-                                    : false,
                                 keyboardType: TextInputType.name,
                                 controller: controller.alamatController,
                                 maxLines: 5,
@@ -551,13 +504,9 @@ class DetailPemancinganView extends StatelessWidget {
                                           controllerHome.mapController,
                                       options: MapOptions(
                                         onTap: (tapPosition, point) {
-                                          if (loginController
-                                                  .userData.value.role ==
-                                              'user') {
-                                            controller.markerLocation.value =
-                                                LatLng(point.latitude,
-                                                    point.longitude);
-                                          }
+                                          controller.markerLocation.value =
+                                              LatLng(point.latitude,
+                                                  point.longitude);
                                         },
                                         rotation: (controllerHome
                                                 .compassHeading.value *
@@ -649,197 +598,35 @@ class DetailPemancinganView extends StatelessWidget {
                                 },
                               ),
                             ),
-                            if (loginController.userData.value.role == 'user')
-                              Container(
-                                margin: const EdgeInsets.only(top: 10),
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        const Color.fromRGBO(4, 99, 128, 1),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 10),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      const Color.fromRGBO(4, 99, 128, 1),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  onPressed: () {
-                                    controller.updatePemancinganData(context);
-                                  },
-                                  child: const Center(
-                                    child: Text(
-                                      "Ubah",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
+                                ),
+                                onPressed: () {
+                                  controller.updatePemancinganData(context);
+                                },
+                                child: const Center(
+                                  child: Text(
+                                    "Ubah",
+                                    style: TextStyle(
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ),
                               ),
-                            if (loginController.userData.value.role == 'admin')
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  if (controller.statusPemancingan.value ==
-                                          '0' ||
-                                      controller.statusPemancingan.value ==
-                                          'null')
-                                    Container(
-                                      margin: const EdgeInsets.only(top: 3),
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              Color.fromARGB(255, 8, 159, 0),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          FocusScope.of(context).unfocus();
-                                          controller.resetDropdown();
-                                          controller.getPemancinganAll();
-                                          controller.updateStatusPemancingan(
-                                              int.parse(
-                                                  controller.idPemancingan),
-                                              '1',
-                                              controller.pesanController.text);
-                                          layoutController.pemancinganPage();
-                                          userPemancinganController
-                                              .loading.value = false;
-                                          userPemancinganController
-                                              .getDataPemancinganFU();
-                                        },
-                                        child: const Center(
-                                          child: Text(
-                                            "Setujui",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  if ((controller.statusPemancingan.value ==
-                                              '1' ||
-                                          controller.statusPemancingan.value ==
-                                              'null') &&
-                                      controller.statusDesc.value == false)
-                                    Container(
-                                      margin: const EdgeInsets.only(top: 3),
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              Color.fromARGB(255, 159, 0, 0),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          FocusScope.of(context).unfocus();
-                                          controller.statusDesc.value = true;
-                                        },
-                                        child: const Center(
-                                          child: Text(
-                                            "Tolak",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            Obx(() {
-                              if (controller.statusDesc.value == true) {
-                                return Column(
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(top: 20),
-                                      child: const Text(
-                                        "Pesan :",
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                            fontSize: 15.0,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.only(top: 5),
-                                      child: TextFormField(
-                                        keyboardType: TextInputType.name,
-                                        controller: controller.pesanController,
-                                        maxLines: 5,
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Silakan ketik pesan alasan ditolak !';
-                                          }
-                                          return null;
-                                        },
-                                        decoration: const InputDecoration(
-                                            border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10)),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10)),
-                                            ),
-                                            hintText:
-                                                "e.g alamat tidak sesuai!"),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.only(top: 10),
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: const Color.fromARGB(
-                                              255, 211, 0, 0),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          FocusScope.of(context).unfocus();
-                                          controller.resetDropdown();
-                                          controller.getPemancinganAll();
-                                          controller.updateStatusPemancingan(
-                                              int.parse(
-                                                  controller.idPemancingan),
-                                              '0',
-                                              controller.pesanController.text);
-                                          layoutController.pemancinganPage();
-                                          userPemancinganController
-                                              .loading.value = false;
-                                          userPemancinganController
-                                              .getDataPemancinganFU();
-                                          controller.statusDesc.value = false;
-                                        },
-                                        child: const Center(
-                                          child: Text(
-                                            "Tolak",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              } else {
-                                return const SizedBox();
-                              }
-                            }),
-
+                            ),
                             Container(
                               margin: const EdgeInsets.only(top: 3),
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:
-                                      Color.fromARGB(255, 90, 90, 90),
+                                      Color.fromARGB(255, 159, 0, 0),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -848,18 +635,7 @@ class DetailPemancinganView extends StatelessWidget {
                                   FocusScope.of(context).unfocus();
                                   controller.resetDropdown();
                                   controller.getPemancinganAll();
-
-                                  controller.statusDesc.value = false;
-                                  if (loginController.userData.value.role ==
-                                      'user') {
-                                    layoutController.pemancinganSayaPage();
-                                  } else {
-                                    layoutController.pemancinganPage();
-                                    userPemancinganController.loading.value =
-                                        false;
-                                    userPemancinganController
-                                        .getDataPemancinganFU();
-                                  }
+                                  layoutController.pemancinganSayaPage();
                                 },
                                 child: const Center(
                                   child: Text(

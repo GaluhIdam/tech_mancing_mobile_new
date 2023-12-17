@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tech_mancing/app/layout/controllers/layout.controller.dart';
 import 'package:tech_mancing/app/modules/Login/services/auth.service.dart';
+import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan-user.controller.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/models/detail-pemancingan.dto.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/services/pemancingan.service.dart';
 
@@ -9,6 +10,8 @@ class PemancinganDetailController extends GetxController {
   final PemancinganService pemancinganService = Get.put(PemancinganService());
   final AuthService authService = Get.put(AuthService());
   final LayoutController layoutController = Get.put(LayoutController());
+  final PemancinganUserController pemancinganUserController =
+      Get.put(PemancinganUserController());
 
   final TextEditingController komentar = TextEditingController();
 
@@ -43,7 +46,7 @@ class PemancinganDetailController extends GetxController {
       komentarPemancingan.clear();
       await pemancinganService.getDetailPemancingan(id).then((value) async {
         urlImage.value =
-            'http://192.168.0.2:8000/api/images-pemancingan/${value.data.image}';
+            'http://192.168.102.118:8000/api/images-pemancingan/${value.data.image}';
         idPemancingan.value = value.data.id;
         idUser.value = value.data.userPemancingan.id;
         namaController.value = value.data.namaPemancingan;
@@ -64,7 +67,9 @@ class PemancinganDetailController extends GetxController {
   }
 
   Future<bool> backToPemancingan() async {
+    getDetailUser();
     layoutController.pemancinganPage();
+    pemancinganUserController.getDataPemancinganFU();
     return false;
   }
 

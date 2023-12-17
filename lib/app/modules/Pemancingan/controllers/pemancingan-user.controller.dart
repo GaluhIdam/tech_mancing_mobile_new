@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:tech_mancing/app/layout/controllers/layout.controller.dart';
 import 'package:tech_mancing/app/modules/Home/controllers/home.controller.dart';
+import 'package:tech_mancing/app/modules/Login/controllers/login.controller.dart';
 import 'package:tech_mancing/app/modules/Login/services/auth.service.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/models/list-pemancingan.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/services/pemancingan.service.dart';
@@ -16,6 +17,7 @@ class PemancinganUserController extends GetxController {
   final LayoutController layoutController = Get.put(LayoutController());
   final TextEditingController searchController = TextEditingController();
   final HomeController homeController = Get.put(HomeController());
+  final LoginController loginController = Get.put(LoginController());
   final List<DatumListPemancingan> listPemancingan =
       <DatumListPemancingan>[].obs;
   Rx<int> totalDataPemancingan = 0.obs;
@@ -42,13 +44,19 @@ class PemancinganUserController extends GetxController {
         if (scrollController.position.pixels ==
             scrollController.position.maxScrollExtent) {
           page++;
-          getDataPemancinganForUser(
-                  searchController.text,
-                  '$page',
-                  paginate.toString(),
-                  homeController.currentLocation.value!.latitude.toString(),
-                  homeController.currentLocation.value!.longitude.toString())
-              .then((value) => loading.value = true);
+          if (loginController.userData.value.role == 'user') {
+            getDataPemancinganForUser(
+                    searchController.text,
+                    '$page',
+                    paginate.toString(),
+                    homeController.currentLocation.value!.latitude.toString(),
+                    homeController.currentLocation.value!.longitude.toString())
+                .then((value) => loading.value = true);
+          } else {
+            getDataPemancinganForAdmin(
+                    searchController.text, '$page', paginate.toString())
+                .then((value) => loading.value = true);
+          }
         }
       });
     } catch (e) {
@@ -77,6 +85,21 @@ class PemancinganUserController extends GetxController {
     }
   }
 
+  //Get Pemancingan By Admin
+  Future<void> getDataPemancinganForAdmin(
+      String search, String page, String paginate) async {
+    try {
+      await pemancinganService
+          .getPemancinganForAdmin(search, page, paginate)
+          .then((value) => {
+                totalDataPemancingan.value = value.data.total,
+                listPemancingan.addAll(value.data.data),
+              });
+    } catch (e) {
+      print('Error fetching Pemancingan for admin: $e');
+    }
+  }
+
   Future<bool> onWillPop() async {
     DateTime now = DateTime.now();
     if (currentBackPressTime == null ||
@@ -92,13 +115,19 @@ class PemancinganUserController extends GetxController {
   void getDataPemancinganFU() async {
     listPemancingan.clear();
     page = 1;
-    await getDataPemancinganForUser(
-            searchController.text,
-            '$page',
-            paginate.toString(),
-            homeController.currentLocation.value!.latitude.toString(),
-            homeController.currentLocation.value!.longitude.toString())
-        .then((value) => loading.value = true);
+    if (loginController.userData.value.role == 'user') {
+      await getDataPemancinganForUser(
+              searchController.text,
+              '$page',
+              paginate.toString(),
+              homeController.currentLocation.value!.latitude.toString(),
+              homeController.currentLocation.value!.longitude.toString())
+          .then((value) => loading.value = true);
+    } else {
+      await getDataPemancinganForAdmin(
+              searchController.text, '$page', paginate.toString())
+          .then((value) => loading.value = true);
+    }
   }
 
   //Distance Count

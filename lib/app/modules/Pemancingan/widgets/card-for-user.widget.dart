@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tech_mancing/app/layout/controllers/layout.controller.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan-detail.controller.dart';
+import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan-saya.controller.dart';
 
 class CardForUserWidget extends StatelessWidget {
   final int id;
   final int? meter;
+  final int? status;
+  final String role;
   final String? image;
   final String title;
   final String alamat;
@@ -15,12 +18,15 @@ class CardForUserWidget extends StatelessWidget {
   final String kecamatan;
   final String kota;
   final String provinsi;
+  final String? pesan;
   final double? rate;
 
   CardForUserWidget({
     Key? key, // Add the key parameter
     required this.id,
     required this.meter,
+    required this.status,
+    required this.role,
     required this.image,
     required this.title,
     required this.alamat,
@@ -30,11 +36,14 @@ class CardForUserWidget extends StatelessWidget {
     required this.kecamatan,
     required this.kota,
     required this.provinsi,
+    required this.pesan,
     required this.rate,
   }) : super(key: key); // Call the superclass constructor
 
   final PemancinganDetailController pemancinganDetailContoller =
       Get.put(PemancinganDetailController());
+  final PemancinganSayaContoller pemancinganSayaContoller =
+      Get.put(PemancinganSayaContoller());
   final LayoutController layoutController = Get.put(LayoutController());
 
   @override
@@ -58,6 +67,37 @@ class CardForUserWidget extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: Column(
               children: <Widget>[
+                if (role == 'admin')
+                  Container(
+                    margin: const EdgeInsets.only(top: 10, bottom: 5),
+                    padding: const EdgeInsets.fromLTRB(5, 5, 5, 7),
+                    decoration: BoxDecoration(
+                      color: status == null
+                          ? const Color.fromRGBO(215, 223, 0, 1)
+                          : status == 1
+                              ? const Color.fromRGBO(3, 165, 0, 1)
+                              : const Color.fromRGBO(177, 0, 0, 1),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Text(
+                      status == null
+                          ? "Menunggu Persetujuan"
+                          : status == 1
+                              ? "Disetujui"
+                              : "Ditolak",
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                if (pesan != null)
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    padding: const EdgeInsets.fromLTRB(5, 5, 5, 7),
+                    child: Text(
+                      'Pesan : ${pesan!}',
+                      style: const TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 SizedBox(
                   width: double.infinity,
                   height: 200.0,
@@ -199,7 +239,11 @@ class CardForUserWidget extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      pemancinganDetailContoller.getPemancinganById(id);
+                      if (role == 'user') {
+                        pemancinganDetailContoller.getPemancinganById(id);
+                      } else {
+                        pemancinganSayaContoller.getPemancinganById(id);
+                      }
                     },
                     child: const Text(
                       'Lihat',

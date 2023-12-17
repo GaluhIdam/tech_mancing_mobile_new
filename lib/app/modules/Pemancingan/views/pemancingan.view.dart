@@ -3,12 +3,14 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:tech_mancing/app/layout/controllers/layout.controller.dart';
 import 'package:tech_mancing/app/modules/Home/controllers/home.controller.dart';
+import 'package:tech_mancing/app/modules/Login/controllers/login.controller.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan-user.controller.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/widgets/card-for-user.widget.dart';
 
 class PemancinganView extends StatelessWidget {
   PemancinganView({super.key});
   final LayoutController layoutController = Get.put(LayoutController());
+  final LoginController loginController = Get.put(LoginController());
   final HomeController homeController = Get.put(HomeController());
   final PemancinganUserController pemancinganUserController =
       Get.put(PemancinganUserController());
@@ -31,17 +33,27 @@ class PemancinganView extends StatelessWidget {
                       pemancinganUserController.loading.value = false;
                       FocusManager.instance.primaryFocus?.unfocus();
                       pemancinganUserController.listPemancingan.clear();
-                      await pemancinganUserController
-                          .getDataPemancinganForUser(
-                              pemancinganUserController.searchController.text,
-                              pemancinganUserController.page.toString(),
-                              pemancinganUserController.paginate.toString(),
-                              homeController.currentLocation.value!.latitude
-                                  .toString(),
-                              homeController.currentLocation.value!.longitude
-                                  .toString())
-                          .then((value) =>
-                              pemancinganUserController.loading.value = true);
+                      if (loginController.userData.value.role == 'user') {
+                        await pemancinganUserController
+                            .getDataPemancinganForUser(
+                                pemancinganUserController.searchController.text,
+                                pemancinganUserController.page.toString(),
+                                pemancinganUserController.paginate.toString(),
+                                homeController.currentLocation.value!.latitude
+                                    .toString(),
+                                homeController.currentLocation.value!.longitude
+                                    .toString())
+                            .then((value) =>
+                                pemancinganUserController.loading.value = true);
+                      } else {
+                        await pemancinganUserController
+                            .getDataPemancinganForAdmin(
+                                pemancinganUserController.searchController.text,
+                                pemancinganUserController.page.toString(),
+                                pemancinganUserController.paginate.toString())
+                            .then((value) =>
+                                pemancinganUserController.loading.value = true);
+                      }
                     },
                     decoration: const InputDecoration(
                         labelText: "cari pemancingan terdekat...",
@@ -81,8 +93,9 @@ class PemancinganView extends StatelessWidget {
                                       in pemancinganUserController
                                           .listPemancingan)
                                     CardForUserWidget(
+                                      pesan: pemancingan.pesan,
                                       image:
-                                          'http://192.168.0.2:8000/api/images-pemancingan/${pemancingan.image}',
+                                          'http://192.168.102.118:8000/api/images-pemancingan/${pemancingan.image}',
                                       title: pemancingan.namaPemancingan,
                                       alamat: pemancingan.alamat,
                                       mulai: pemancingan.buka,
@@ -105,6 +118,8 @@ class PemancinganView extends StatelessWidget {
                                       rate: pemancinganUserController
                                           .calculateAverageRating(
                                               pemancingan.komentarPemancingan),
+                                      status: pemancingan.status,
+                                      role: loginController.userData.value.role,
                                     ),
                                   Obx(() {
                                     if (pemancinganUserController
@@ -139,30 +154,50 @@ class PemancinganView extends StatelessWidget {
                                             pemancinganUserController.page++;
                                             pemancinganUserController
                                                 .loadingMore.value = false;
-                                            pemancinganUserController
-                                                .getDataPemancinganForUser(
-                                                    pemancinganUserController
-                                                        .searchController.text,
-                                                    pemancinganUserController
-                                                        .page
-                                                        .toString(),
-                                                    pemancinganUserController
-                                                        .paginate
-                                                        .toString(),
-                                                    homeController
-                                                        .currentLocation
-                                                        .value!
-                                                        .latitude
-                                                        .toString(),
-                                                    homeController
-                                                        .currentLocation
-                                                        .value!
-                                                        .longitude
-                                                        .toString())
-                                                .then((value) =>
-                                                    pemancinganUserController
-                                                        .loadingMore
-                                                        .value = true);
+                                            if (loginController
+                                                    .userData.value.role ==
+                                                'user') {
+                                              pemancinganUserController
+                                                  .getDataPemancinganForUser(
+                                                      pemancinganUserController
+                                                          .searchController
+                                                          .text,
+                                                      pemancinganUserController.page
+                                                          .toString(),
+                                                      pemancinganUserController
+                                                          .paginate
+                                                          .toString(),
+                                                      homeController
+                                                          .currentLocation
+                                                          .value!
+                                                          .latitude
+                                                          .toString(),
+                                                      homeController
+                                                          .currentLocation
+                                                          .value!
+                                                          .longitude
+                                                          .toString())
+                                                  .then((value) =>
+                                                      pemancinganUserController
+                                                          .loading
+                                                          .value = true);
+                                            } else {
+                                              pemancinganUserController
+                                                  .getDataPemancinganForAdmin(
+                                                      pemancinganUserController
+                                                          .searchController
+                                                          .text,
+                                                      pemancinganUserController
+                                                          .page
+                                                          .toString(),
+                                                      pemancinganUserController
+                                                          .paginate
+                                                          .toString())
+                                                  .then((value) =>
+                                                      pemancinganUserController
+                                                          .loading
+                                                          .value = true);
+                                            }
                                           },
                                           child: const Text(
                                             'Tampilkan data',
@@ -183,17 +218,27 @@ class PemancinganView extends StatelessWidget {
                     pemancinganUserController.listPemancingan.clear();
                     pemancinganUserController.page = 1;
                     pemancinganUserController.loading.value = false;
-                    await pemancinganUserController
-                        .getDataPemancinganForUser(
-                            pemancinganUserController.searchController.text,
-                            pemancinganUserController.page.toString(),
-                            pemancinganUserController.paginate.toString(),
-                            homeController.currentLocation.value!.latitude
-                                .toString(),
-                            homeController.currentLocation.value!.longitude
-                                .toString())
-                        .then((value) =>
-                            pemancinganUserController.loading.value = true);
+                    if (loginController.userData.value.role == 'user') {
+                      await pemancinganUserController
+                          .getDataPemancinganForUser(
+                              pemancinganUserController.searchController.text,
+                              pemancinganUserController.page.toString(),
+                              pemancinganUserController.paginate.toString(),
+                              homeController.currentLocation.value!.latitude
+                                  .toString(),
+                              homeController.currentLocation.value!.longitude
+                                  .toString())
+                          .then((value) =>
+                              pemancinganUserController.loading.value = true);
+                    } else {
+                      await pemancinganUserController
+                          .getDataPemancinganForAdmin(
+                              pemancinganUserController.searchController.text,
+                              pemancinganUserController.page.toString(),
+                              pemancinganUserController.paginate.toString())
+                          .then((value) =>
+                              pemancinganUserController.loading.value = true);
+                    }
                   })),
         ),
         onWillPop: () async => await pemancinganUserController.onWillPop());

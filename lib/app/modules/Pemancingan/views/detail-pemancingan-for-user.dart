@@ -111,11 +111,6 @@ class DetailPemancinganForUserView extends StatelessWidget {
                   ],
                 )),
             Container(
-              margin: const EdgeInsets.only(
-                  top: 15, left: 15, right: 15, bottom: 15),
-              child: Text('data'),
-            ),
-            Container(
               margin: const EdgeInsets.only(top: 15),
               child: const Divider(
                 thickness: 0.5,

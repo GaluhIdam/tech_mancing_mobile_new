@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:tech_mancing/app/layout/controllers/layout.controller.dart';
-import 'package:tech_mancing/app/modules/Acara/controllers/acara.controller.dart';
-import 'package:tech_mancing/app/modules/Acara/widgets/event.widget.dart';
+import 'package:tech_mancing/app/modules/Acara/controllers/acara-user.controller.dart';
+import 'package:tech_mancing/app/modules/Acara/widgets/event-user.widget.dart';
 
-class AcaraSayaView extends StatelessWidget {
-  AcaraSayaView({Key? key}) : super(key: key);
+class AcaraUserView extends StatelessWidget {
+  AcaraUserView({super.key});
 
   final LayoutController layoutController = Get.put(LayoutController());
-  final AcaraController acaraController = Get.put(AcaraController());
+  final AcaraUserController acaraController = Get.put(AcaraUserController());
 
   @override
   Widget build(BuildContext context) {
@@ -22,19 +23,6 @@ class AcaraSayaView extends StatelessWidget {
           title: Column(
             children: [
               Container(
-                margin: const EdgeInsets.only(top: 5),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        const Color.fromRGBO(4, 99, 128, 1)),
-                  ),
-                  onPressed: () {
-                    layoutController.daftarAcaraSayaPage();
-                  },
-                  child: const Text('Daftarkan Acara'),
-                ),
-              ),
-              Container(
                 margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                 child: TextFormField(
                   controller: acaraController.searchController,
@@ -44,17 +32,13 @@ class AcaraSayaView extends StatelessWidget {
                   },
                   onEditingComplete: () {
                     acaraController.listAcara.clear();
-                    acaraController.getDetailUser().then((value) {
-                      acaraController
-                          .getDataAcara(
-                            acaraController.searchController.text,
-                            '${acaraController.page}',
-                            '${acaraController.paginate}',
-                            acaraController.idUser,
-                          )
-                          .then(
-                              (value) => acaraController.loading.value = true);
-                    });
+                    acaraController
+                        .getDataAcara(
+                          acaraController.searchController.text,
+                          '${acaraController.page}',
+                          '${acaraController.paginate}',
+                        )
+                        .then((value) => acaraController.loading.value = true);
                     FocusManager.instance.primaryFocus?.unfocus();
                   },
                   decoration: const InputDecoration(
@@ -95,7 +79,7 @@ class AcaraSayaView extends StatelessWidget {
                           ]
                         : [
                             for (var acara in acaraController.listAcara)
-                              EventWidget(
+                              EventUserWidget(
                                 status: acara.status,
                                 image:
                                     'http://192.168.102.118:8000/api/images-acara/${acara.gambar}',
@@ -117,7 +101,7 @@ class AcaraSayaView extends StatelessWidget {
                                   ),
                                 );
                               } else {
-                                return const SizedBox();
+                                return SizedBox();
                               }
                             }),
                             Obx(() {
@@ -141,7 +125,6 @@ class AcaraSayaView extends StatelessWidget {
                                                 .searchController.text,
                                             '${acaraController.page}',
                                             '${acaraController.paginate}',
-                                            acaraController.idUser,
                                           )
                                           .then((value) => acaraController
                                               .loadingMore.value = true);
@@ -166,15 +149,12 @@ class AcaraSayaView extends StatelessWidget {
             acaraController.listAcara.clear();
             acaraController.page = 1;
             await acaraController
-                .getDetailUser()
-                .then((value) => acaraController
-                    .getDataAcara(
-                      acaraController.searchController.text,
-                      '${acaraController.page}',
-                      '${acaraController.paginate}',
-                      acaraController.idUser,
-                    )
-                    .then((value) => acaraController.loading.value = true));
+                .getDataAcara(
+                  acaraController.searchController.text,
+                  '${acaraController.page}',
+                  '${acaraController.paginate}',
+                )
+                .then((value) => acaraController.loading.value = true);
           },
         ),
       ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:tech_mancing/app/modules/Acara/controllers/acara.controller.dart';
+import 'package:tech_mancing/app/modules/Acara/controllers/acara-user.controller.dart';
 
-class EventWidget extends StatelessWidget {
+class EventUserWidget extends StatelessWidget {
   final int idAcara;
   final String? image;
   final String title;
@@ -13,7 +13,7 @@ class EventWidget extends StatelessWidget {
   final DateTime selesai;
   final int? status;
   final int grandPrize;
-  EventWidget(
+  EventUserWidget(
       {super.key,
       required this.idAcara,
       required this.image,
@@ -25,7 +25,7 @@ class EventWidget extends StatelessWidget {
       required this.status,
       required this.grandPrize});
 
-  final AcaraController acaraController = Get.put(AcaraController());
+  final AcaraUserController acaraController = Get.put(AcaraUserController());
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -48,26 +48,6 @@ class EventWidget extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
             child: Column(
               children: <Widget>[
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 7),
-                  decoration: BoxDecoration(
-                    color: status == null
-                        ? const Color.fromRGBO(215, 223, 0, 1)
-                        : status == 1
-                            ? const Color.fromRGBO(3, 165, 0, 1)
-                            : const Color.fromRGBO(177, 0, 0, 1),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                    status == null
-                        ? "Menunggu Persetujuan"
-                        : status == 1
-                            ? "Disetujui"
-                            : "Ditolak",
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
                 SizedBox(
                   width: double.infinity,
                   height: 200.0,

@@ -26,6 +26,7 @@ class PemancinganSayaContoller extends GetxController {
   final TextEditingController bukaController = TextEditingController();
   final TextEditingController tutupController = TextEditingController();
   final TextEditingController searchController = TextEditingController();
+  final TextEditingController pesanController = TextEditingController();
 
   DateTime? currentBackPressTime;
 
@@ -34,6 +35,8 @@ class PemancinganSayaContoller extends GetxController {
   ScrollController scrollController = ScrollController();
 
   Rx<LatLng> markerLocation = const LatLng(0, 0).obs;
+
+  RxBool descController = false.obs;
 
   final List<DatumListPemancingan> listPemancinganByUser =
       <DatumListPemancingan>[].obs;
@@ -60,6 +63,10 @@ class PemancinganSayaContoller extends GetxController {
     name: '',
     regencyId: '',
   ).obs;
+
+  RxString statusPemancingan = ''.obs;
+
+  RxBool statusDesc = false.obs;
 
   String idUser = '';
   String isAdmin = 'false';
@@ -274,8 +281,13 @@ class PemancinganSayaContoller extends GetxController {
       changeFile.value = false;
       await pemancinganService.getDetailPemancingan(id).then((value) async {
         idPemancingan = value.data.id.toString();
+        statusPemancingan.value = value.data.status == null
+            ? 'null'
+            : value.data.status == 1
+                ? '1'
+                : '0';
         urlImage.value =
-            'http://192.168.0.2:8000/api/images-pemancingan/${value.data.image}';
+            'http://192.168.102.118:8000/api/images-pemancingan/${value.data.image}';
         namaController.text = value.data.namaPemancingan;
         descriptionController.text = value.data.deskripsi;
         alamatController.text = value.data.alamat;
@@ -391,6 +403,7 @@ class PemancinganSayaContoller extends GetxController {
         now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
       currentBackPressTime = now;
       Fluttertoast.showToast(msg: "Back again to exit");
+      statusDesc.value = false;
       return false;
     }
     Get.back();
@@ -402,5 +415,11 @@ class PemancinganSayaContoller extends GetxController {
     resetDropdown();
     getPemancinganAll();
     return false;
+  }
+
+  Future<void> updateStatusPemancingan(
+      int id, String status, String pesan) async {
+    await pemancinganService.updateStatusPemancingan(id, status, pesan);
+    ;
   }
 }

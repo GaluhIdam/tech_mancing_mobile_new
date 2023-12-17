@@ -120,7 +120,7 @@ class DatumListPemancingan {
   String latitude;
   String longitude;
   dynamic pesan;
-  int status;
+  int? status;
   DateTime createdAt;
   DateTime updatedAt;
   UserPemancingan userPemancingan;

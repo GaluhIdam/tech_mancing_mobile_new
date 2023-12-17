@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:tech_mancing/app/modules/Register/models/RegisterDTO.dart';
 
 class ResgiterService extends GetxService {
-  final String urlRegister = 'http://192.168.0.2:8000/api/register';
+  final String urlRegister = 'http://192.168.102.118:8000/api/register';
 
   Future<RegisterDto> registerUser(
       String name, email, password, re_password, no_telp) async {

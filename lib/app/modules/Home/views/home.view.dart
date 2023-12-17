@@ -14,13 +14,6 @@ class HomeView extends StatelessWidget {
   final HomeController controller = Get.put(HomeController());
   final PemancinganUserController pemancinganUserController =
       Get.put(PemancinganUserController());
-  final List<String> suggestions = [
-    'Suggestion 1',
-    'Suggestion 2',
-    'Suggestion 3',
-    'Suggestion 4',
-    'Suggestion 5',
-  ];
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -100,7 +93,7 @@ class HomeView extends StatelessWidget {
                                                             child:
                                                                 CardViewWidget(
                                                               image:
-                                                                  'http://192.168.0.2:8000/api/images-pemancingan/${pemancingan.image}',
+                                                                  'http://192.168.102.118:8000/api/images-pemancingan/${pemancingan.image}',
                                                               title: pemancingan
                                                                   .namaPemancingan,
                                                               alamat:

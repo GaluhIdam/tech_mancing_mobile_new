@@ -12,9 +12,35 @@ import 'package:http/http.dart' as http;
 class AcaraService extends GetxService {
   final AuthService authService = Get.put(AuthService());
 
-  final String urlAcara = 'http://192.168.0.2:8000/api/acara';
-  final String urlAcaraUser = 'http://192.168.0.2:8000/api/acara-user/';
-  final String urlAcaraDetail = 'http://192.168.0.2:8000/api/acara/';
+  final String urlAcara = 'http://192.168.102.118:8000/api/acara';
+  final String urlAcaraUser = 'http://192.168.102.118:8000/api/acara-user/';
+  final String urlAcaraDetail = 'http://192.168.102.118:8000/api/acara/';
+
+  //Get Acara For User
+  Future<ListAcaraDto> getAcaraForUser(
+      String search, String page, String paginate) async {
+    final tokenData = await authService.readToken();
+    final uri = Uri.parse(urlAcara);
+    final queryParams = {
+      'search': search,
+      'page': page,
+      'paginate': paginate,
+    };
+    final response = await http.get(
+      uri.replace(queryParameters: queryParams),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${tokenData['token']}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final res = ListAcaraDto.fromJson(json.decode(response.body));
+      return res;
+    } else {
+      throw Exception('Failed to fetch acara data: ${response.statusCode}');
+    }
+  }
 
   //Get Acara By User
   Future<ListAcaraDto> getAcara(

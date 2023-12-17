@@ -6,7 +6,7 @@ import 'package:tech_mancing/app/modules/Login/models/UserDetailDTO.dart';
 import 'package:tech_mancing/core/dto/servicedto.dart';
 
 class AuthService extends GetxService {
-  final String baseURL = 'http://192.168.0.2:8000/api';
+  final String baseURL = 'http://192.168.102.118:8000/api';
   final storage = const FlutterSecureStorage(
       aOptions: AndroidOptions(encryptedSharedPreferences: true));
 

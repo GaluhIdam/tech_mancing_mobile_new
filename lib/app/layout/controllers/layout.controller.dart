@@ -20,6 +20,20 @@ class LayoutController extends GetxController {
   RxString title = "Explorasi".obs;
   Rx<Icon?> myIcon = Rx<Icon?>(null);
 
+  void acaraUserPage() {
+    currentRoute.value = AppRoutes.acaraUser;
+    title.value = "Acara";
+    myIcon.value = const Icon(Icons.event);
+    Get.back();
+  }
+
+  void acaraDetailUserPage() {
+    currentRoute.value = AppRoutes.detailAcaraUser;
+    title.value = "Detail Acara";
+    myIcon.value = const Icon(Icons.event);
+    Get.back();
+  }
+
   void explorasiPage() {
     currentRoute.value = AppRoutes.home;
     title.value = "Explorasi";
@@ -71,6 +85,13 @@ class LayoutController extends GetxController {
 
   void detailPemancinganPage() {
     currentRoute.value = AppRoutes.detailPemancingan;
+    title.value = "Detail Pemancingan";
+    myIcon.value = const Icon(Icons.phishing);
+    Get.back();
+  }
+
+  void detailPemancinganAdminPage() {
+    currentRoute.value = AppRoutes.detailPemancinganAdmin;
     title.value = "Detail Pemancingan";
     myIcon.value = const Icon(Icons.phishing);
     Get.back();
