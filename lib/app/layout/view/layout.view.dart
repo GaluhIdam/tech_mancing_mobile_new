@@ -25,7 +25,7 @@ class LayoutView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Obx(() => GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Scaffold(
           appBar: AppBar(
@@ -95,6 +95,6 @@ class LayoutView extends StatelessWidget {
                 return HomeView();
             }
           }),
-        ));
+        )));
   }
 }

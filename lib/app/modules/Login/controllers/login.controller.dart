@@ -64,6 +64,7 @@ class LoginController extends GetxController {
         } else {
           authService.createToken(value.token!, email);
           passwordController.clear();
+          getUser();
           Get.offAllNamed(AppRoutes.layout);
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               duration: const Duration(seconds: 2),
