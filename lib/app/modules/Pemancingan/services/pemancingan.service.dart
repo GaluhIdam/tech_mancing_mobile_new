@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tech_mancing/app/modules/Login/services/auth.service.dart';
+import 'package:tech_mancing/app/modules/Pemancingan/models/StatsPemancingan.dto.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/models/detail-pemancingan.dto.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/models/kecamatan.dto.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/models/kota.dto.dart';
@@ -20,16 +21,21 @@ class PemancinganService extends GetxService {
   final String urlKecamatan =
       'https://www.emsifa.com/api-wilayah-indonesia/api/districts/';
 
-  final String urlPemancingan = 'http://192.168.102.118:8000/api/pemancingan';
+  final String urlPemancingan = 'http://192.168.163.118:8000/api/pemancingan';
   final String urlPemancinganByUser =
-      'http://192.168.102.118:8000/api/pemancingan-by-user';
+      'http://192.168.163.118:8000/api/pemancingan-by-user';
   final String urlPemancinganForUser =
-      'http://192.168.102.118:8000/api/pemancingan-for-user';
-  final String urlUser = 'http://192.168.102.118:8000/api/get-user';
+      'http://192.168.163.118:8000/api/pemancingan-for-user';
+  final String urlUser = 'http://192.168.163.118:8000/api/get-user';
   final String urlKomentarRate =
-      'http://192.168.102.118:8000/api/komentar-rate';
+      'http://192.168.163.118:8000/api/komentar-rate';
   final String urlPemancinganStatus =
-      'http://192.168.102.118:8000/api/pemancingan-status';
+      'http://192.168.163.118:8000/api/pemancingan-status';
+
+  final String urlPemancinganStats =
+      'http://192.168.163.118:8000/api/pemancingan-stats';
+  final String urlPemancinganAdmin =
+      'http://192.168.163.118:8000/api/pemancingan-admin';
 
   //Get Provinsi
   Future<List<ProvinsiDto>> getProvinsi() async {
@@ -273,7 +279,7 @@ class PemancinganService extends GetxService {
       return res;
     } else {
       throw Exception(
-          'Failed to fetch pemancingan data: ${response.statusCode}');
+          'Failed to fetch status pemancingan data: ${response.statusCode}');
     }
   }
 
@@ -354,6 +360,57 @@ class PemancinganService extends GetxService {
       }
     } catch (e) {
       throw Exception('Error to creating komentar: $e');
+    }
+  }
+
+  Future<StatsPemancinganDto> getStatsPemancingan() async {
+    try {
+      final tokenData = await authService.readToken();
+
+      final uri = Uri.parse(urlPemancinganStats);
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${tokenData['token']}',
+        },
+      );
+      if (response.statusCode == 200) {
+        final res = StatsPemancinganDto.fromJson(json.decode(response.body));
+        return res;
+      } else {
+        throw Exception(
+            'Failed to fetch pemancingan data: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error to stats pemancingan: $e');
+    }
+  }
+
+  Future<ListPemancinganDto> getDataPemancinganForAdmin(
+      String filter, String search, String page, String paginate) async {
+    final tokenData = await authService.readToken();
+
+    final uri = Uri.parse('$urlPemancinganAdmin/$filter');
+    final queryParams = {
+      'search': search,
+      'page': page,
+      'paginate': paginate,
+    };
+    final response = await http.get(
+      uri.replace(queryParameters: queryParams),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${tokenData['token']}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final res = ListPemancinganDto.fromJson(json.decode(response.body));
+      return res;
+    } else {
+      throw Exception(
+          'Failed to fetch pemancingan data: ${response.statusCode}');
     }
   }
 }

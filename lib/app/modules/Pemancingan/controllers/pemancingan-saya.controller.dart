@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:tech_mancing/app/layout/controllers/layout.controller.dart';
+import 'package:tech_mancing/app/modules/Login/controllers/login.controller.dart';
 import 'package:tech_mancing/app/modules/Login/services/auth.service.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/models/kecamatan.dto.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/models/kota.dto.dart';
@@ -16,6 +17,7 @@ import 'package:tech_mancing/app/modules/Pemancingan/services/pemancingan.servic
 
 class PemancinganSayaContoller extends GetxController {
   final PemancinganService pemancinganService = Get.put(PemancinganService());
+  final LoginController loginController = Get.put(LoginController());
   final AuthService authService = Get.put(AuthService());
   final LayoutController layoutController = Get.put(LayoutController());
 
@@ -281,18 +283,15 @@ class PemancinganSayaContoller extends GetxController {
       changeFile.value = false;
       await pemancinganService.getDetailPemancingan(id).then((value) async {
         idPemancingan = value.data.id.toString();
-        statusPemancingan.value = value.data.status == null
-            ? 'null'
-            : value.data.status == 1
-                ? '1'
-                : '0';
+        statusPemancingan.value = value.data.status.toString();
         urlImage.value =
-            'http://192.168.102.118:8000/api/images-pemancingan/${value.data.image}';
+            'http://192.168.163.118:8000/api/images-pemancingan/${value.data.image}';
         namaController.text = value.data.namaPemancingan;
         descriptionController.text = value.data.deskripsi;
         alamatController.text = value.data.alamat;
         bukaController.text = value.data.buka;
         tutupController.text = value.data.tutup;
+        pesanController.text = value.data.pesan ?? '';
         markerLocation = LatLng(double.parse(value.data.latitude),
                 double.parse(value.data.longitude))
             .obs;
@@ -411,9 +410,15 @@ class PemancinganSayaContoller extends GetxController {
   }
 
   Future<bool> backToPemancingan() async {
-    layoutController.pemancinganSayaPage();
-    resetDropdown();
-    getPemancinganAll();
+    if (loginController.userData.value.role == 'user') {
+      layoutController.pemancinganSayaPage();
+      resetDropdown();
+      getPemancinganAll();
+    } else {
+      layoutController.pemancinganPage();
+      resetDropdown();
+      getPemancinganAll();
+    }
     return false;
   }
 

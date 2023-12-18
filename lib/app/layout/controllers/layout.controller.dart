@@ -62,6 +62,13 @@ class LayoutController extends GetxController {
     Get.back();
   }
 
+  void detailAcaraAdminPage() {
+    currentRoute.value = AppRoutes.detailAcaraAdmin;
+    title.value = "Detail Acara";
+    myIcon.value = const Icon(Icons.event);
+    Get.back();
+  }
+
   void pemancinganPage() {
     currentRoute.value = AppRoutes.pemancingan;
     title.value = "Pemancingan";

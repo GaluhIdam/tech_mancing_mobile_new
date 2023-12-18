@@ -5,18 +5,23 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:tech_mancing/app/layout/controllers/layout.controller.dart';
+import 'package:tech_mancing/app/modules/Acara/controllers/acara-user.controller.dart';
 import 'package:tech_mancing/app/modules/Acara/controllers/acara.controller.dart';
+import 'package:tech_mancing/app/modules/Login/controllers/login.controller.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/controllers/pemancingan-saya.controller.dart';
 
-class AcaraDetailView extends StatelessWidget {
-  AcaraDetailView({super.key});
+class AcaraDetailAdminView extends StatelessWidget {
+  AcaraDetailAdminView({super.key});
 
   final PemancinganSayaContoller controller =
       Get.put(PemancinganSayaContoller());
   final LayoutController layoutController = Get.put(LayoutController());
   final AcaraController acaraController = Get.put(AcaraController());
+  final AcaraUserController acaraUserController =
+      Get.put(AcaraUserController());
   final PemancinganSayaContoller pemancinganController =
       Get.put(PemancinganSayaContoller());
+  final LoginController loginController = Get.put(LoginController());
 
   @override
   Widget build(BuildContext context) {
@@ -61,19 +66,6 @@ class AcaraDetailView extends StatelessWidget {
                               );
                             }
                           }),
-                          Container(
-                            margin: const EdgeInsets.only(top: 5, bottom: 10),
-                            child: ElevatedButton(
-                              onPressed: DateTime.now().isBefore(DateTime.parse(
-                                      acaraController.startDateController.text))
-                                  ? () {
-                                      FocusScope.of(context).unfocus();
-                                      acaraController.pickFile(context);
-                                    }
-                                  : null,
-                              child: const Text('Pilih Gambar'),
-                            ),
-                          ),
 
                           Container(
                             margin: const EdgeInsets.only(top: 20),
@@ -89,10 +81,7 @@ class AcaraDetailView extends StatelessWidget {
                           Container(
                             margin: const EdgeInsets.only(top: 5),
                             child: TextFormField(
-                              enabled: DateTime.now().isBefore(DateTime.parse(
-                                      acaraController.startDateController.text))
-                                  ? true
-                                  : false,
+                              enabled: false,
                               keyboardType: TextInputType.name,
                               controller: acaraController.namaController,
                               validator: (value) {
@@ -127,10 +116,7 @@ class AcaraDetailView extends StatelessWidget {
                           Container(
                             margin: const EdgeInsets.only(top: 5),
                             child: TextFormField(
-                              enabled: DateTime.now().isBefore(DateTime.parse(
-                                      acaraController.startDateController.text))
-                                  ? true
-                                  : false,
+                              enabled: false,
                               keyboardType: TextInputType.name,
                               controller: acaraController.descriptionController,
                               maxLines: 5,
@@ -169,10 +155,7 @@ class AcaraDetailView extends StatelessWidget {
                           Container(
                             margin: const EdgeInsets.only(top: 5),
                             child: TextFormField(
-                              enabled: DateTime.now().isBefore(DateTime.parse(
-                                      acaraController.startDateController.text))
-                                  ? true
-                                  : false,
+                              enabled: false,
                               controller: acaraController.startDateController,
                               decoration: const InputDecoration(
                                 border: OutlineInputBorder(
@@ -216,10 +199,7 @@ class AcaraDetailView extends StatelessWidget {
                           Container(
                             margin: const EdgeInsets.only(top: 5),
                             child: TextFormField(
-                              enabled: DateTime.now().isBefore(DateTime.parse(
-                                      acaraController.startDateController.text))
-                                  ? true
-                                  : false,
+                              enabled: false,
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Masukkan tanggal akhir';
@@ -277,10 +257,7 @@ class AcaraDetailView extends StatelessWidget {
                           Container(
                             margin: const EdgeInsets.only(top: 5),
                             child: TextFormField(
-                              enabled: DateTime.now().isBefore(DateTime.parse(
-                                      acaraController.startDateController.text))
-                                  ? true
-                                  : false,
+                              enabled: false,
                               keyboardType: TextInputType.number,
                               controller: acaraController.grandPrizeController,
                               validator: (value) {
@@ -354,56 +331,225 @@ class AcaraDetailView extends StatelessWidget {
                                   ),
                                 ),
                               )),
-                          Container(
-                            margin: const EdgeInsets.only(top: 10),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    const Color.fromRGBO(4, 99, 128, 1),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
+                          if (acaraController.pesanController.text.isNotEmpty)
+                            Container(
+                              margin: const EdgeInsets.only(top: 20),
+                              child: const Text(
+                                "Pesan DiTolak :",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    fontSize: 15.0,
+                                    color: Color.fromARGB(255, 192, 0, 0),
+                                    fontWeight: FontWeight.bold),
                               ),
-                              onPressed: DateTime.now().isBefore(DateTime.parse(
-                                      acaraController.startDateController.text))
-                                  ? () {
+                            ),
+                          if (acaraController.pesanController.text.isNotEmpty)
+                            Container(
+                                margin: const EdgeInsets.only(top: 5),
+                                child:
+                                    Text(acaraController.pesanController.text)),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              if (acaraController.statusAcara.value == '0' ||
+                                  acaraController.statusAcara.value == 'null')
+                                Container(
+                                  margin: const EdgeInsets.only(top: 3),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          Color.fromARGB(255, 8, 159, 0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      acaraUserController.loading.value = false;
                                       FocusScope.of(context).unfocus();
-                                      acaraController.updateAcaraData(context,
-                                          acaraController.idAcaras.value);
-                                    }
-                                  : null,
-                              child: Center(
-                                child: DateTime.parse(acaraController
-                                            .startDateController.text)
-                                        .isAfter(DateTime.now())
-                                    ? const Text(
-                                        "Ubah",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    : const Text(
-                                        "Acara Telah Berlangsung",
+                                      if (loginController.userData.value.role ==
+                                          'user') {
+                                        layoutController.acaraSayaPage();
+                                      } else {
+                                        acaraUserController.listAcara.clear();
+                                        acaraController.updateStatusDataAcara(
+                                            int.parse(
+                                                acaraController.idAcaras.value),
+                                            '1',
+                                            controller.pesanController.text);
+                                        acaraUserController.filter.value = '1';
+                                        acaraUserController.getStatsDataAcara();
+                                        acaraUserController
+                                            .getAcaraAdmin(
+                                                acaraUserController
+                                                    .filter.value,
+                                                acaraUserController
+                                                    .searchController.text,
+                                                acaraUserController.page
+                                                    .toString(),
+                                                acaraUserController.paginate
+                                                    .toString())
+                                            .then((value) => acaraUserController
+                                                .loading.value = true);
+                                        layoutController.acaraUserPage();
+                                      }
+                                      acaraController.statusAcara.value =
+                                          'false';
+                                    },
+                                    child: const Center(
+                                      child: Text(
+                                        "Setujui",
                                         style: TextStyle(
                                           color: Colors.white,
                                         ),
                                       ),
-                              ),
-                            ),
+                                    ),
+                                  ),
+                                ),
+                              if ((acaraController.statusAcara.value == '1' ||
+                                      acaraController.statusAcara.value ==
+                                          'null') &&
+                                  acaraController.statusDesc.value == false)
+                                Container(
+                                  margin: const EdgeInsets.only(top: 3),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          Color.fromARGB(255, 159, 0, 0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      FocusScope.of(context).unfocus();
+                                      acaraController.statusAcara.value =
+                                          'true';
+                                    },
+                                    child: const Center(
+                                      child: Text(
+                                        "Tolak",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
+                          Obx(() {
+                            if (acaraController.statusAcara.value == 'true') {
+                              return Column(
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 20),
+                                    child: const Text(
+                                      "Pesan :",
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                          fontSize: 15.0,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 5),
+                                    child: TextFormField(
+                                      keyboardType: TextInputType.name,
+                                      controller: controller.pesanController,
+                                      maxLines: 5,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Silakan ketik pesan alasan ditolak !';
+                                        }
+                                        return null;
+                                      },
+                                      decoration: const InputDecoration(
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
+                                          ),
+                                          hintText: "e.g alamat tidak sesuai!"),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 10),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color.fromARGB(
+                                            255, 211, 0, 0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        FocusScope.of(context).unfocus();
+                                        acaraUserController.loading.value =
+                                            false;
+                                        acaraController.updateStatusDataAcara(
+                                            int.parse(
+                                                acaraController.idAcaras.value),
+                                            '0',
+                                            controller.pesanController.text);
+                                        acaraUserController.listAcara.clear();
+                                        acaraUserController.filter.value = '0';
+                                        acaraUserController.getStatsDataAcara();
+                                        layoutController.acaraUserPage();
+                                        acaraUserController
+                                            .getAcaraAdmin(
+                                                acaraUserController
+                                                    .filter.value,
+                                                acaraUserController
+                                                    .searchController.text,
+                                                acaraUserController.page
+                                                    .toString(),
+                                                acaraUserController.paginate
+                                                    .toString())
+                                            .then((value) => acaraUserController
+                                                .loading.value = true);
+                                        acaraController.statusAcara.value =
+                                            'false';
+                                      },
+                                      child: const Center(
+                                        child: Text(
+                                          "Tolak",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return const SizedBox();
+                            }
+                          }),
                           Container(
                             margin: const EdgeInsets.only(top: 3),
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color.fromARGB(255, 159, 0, 0),
+                                backgroundColor:
+                                    Color.fromARGB(255, 90, 90, 90),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
                               onPressed: () {
                                 FocusScope.of(context).unfocus();
+                                if (loginController.userData.value.role ==
+                                    'user') {
+                                  layoutController.acaraSayaPage();
+                                } else {
+                                  layoutController.acaraUserPage();
+                                }
                                 acaraController.getAcaraAll();
-                                layoutController.acaraSayaPage();
                                 acaraController.clearForm();
                               },
                               child: const Center(

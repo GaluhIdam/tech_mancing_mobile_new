@@ -649,6 +649,22 @@ class DetailPemancinganView extends StatelessWidget {
                                 },
                               ),
                             ),
+                            if (controller.pesanController.text.isNotEmpty)
+                              Container(
+                                margin: const EdgeInsets.only(top: 20),
+                                child: const Text(
+                                  "Pesan DiTolak :",
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                      fontSize: 15.0,
+                                      color: Color.fromARGB(255, 192, 0, 0),
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            if (controller.pesanController.text.isNotEmpty)
+                              Container(
+                                  margin: const EdgeInsets.only(top: 5),
+                                  child: Text(controller.pesanController.text)),
                             if (loginController.userData.value.role == 'user')
                               Container(
                                 margin: const EdgeInsets.only(top: 10),
@@ -877,6 +893,6 @@ class DetailPemancinganView extends StatelessWidget {
                 ],
               ),
             )),
-        onWillPop: () async => await controller.onWillPop());
+        onWillPop: () async => await controller.backToPemancingan());
   }
 }

@@ -18,15 +18,12 @@ class LoginController extends GetxController {
 
   DateTime? currentBackPressTime;
 
-  Rx<Data> userData = Data(
+  final Rx<Data> userData = Data(
     id: 1,
     role: '',
     name: '',
     noTelp: '',
     email: '',
-    emailVerifiedAt: null,
-    createdAt: DateTime.now(),
-    updatedAt: DateTime.now(),
   ).obs;
 
   RxBool loading = false.obs;
@@ -36,7 +33,6 @@ class LoginController extends GetxController {
   void onInit() {
     super.onInit();
     checkToken();
-    getUser();
   }
 
   // Check Token
@@ -46,6 +42,7 @@ class LoginController extends GetxController {
         logging.value = true;
         loading.value = true;
         Get.offNamed(AppRoutes.layout);
+        getUser();
       } else {
         logging.value = false;
         loading.value = true;
@@ -67,7 +64,7 @@ class LoginController extends GetxController {
         } else {
           authService.createToken(value.token!, email);
           passwordController.clear();
-          Get.offNamed(AppRoutes.layout);
+          Get.offAllNamed(AppRoutes.layout);
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               duration: const Duration(seconds: 2),
               behavior: SnackBarBehavior.floating,
@@ -87,7 +84,7 @@ class LoginController extends GetxController {
   //Logout Method
   Future<void> logout(context) async {
     await authService.logout().then((value) {
-      Get.offNamed(AppRoutes.login);
+      Get.offAllNamed(AppRoutes.login);
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           duration: Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
@@ -119,17 +116,16 @@ class LoginController extends GetxController {
   }
 
   Future<void> getUser() async {
-    await authService.getUserDetail().then((value) => {
-          userData.value = Data(
-            createdAt: value.data.createdAt,
-            email: value.data.email,
-            id: value.data.id,
-            name: value.data.name,
-            role: value.data.role,
-            noTelp: value.data.noTelp,
-            emailVerifiedAt: value.data.emailVerifiedAt,
-            updatedAt: value.data.updatedAt,
-          ),
-        });
+    await authService.getUserDetail().then((value) {
+      if (value.data != null) {
+        userData.value = Data(
+          email: value.data.email,
+          id: value.data.id,
+          name: value.data.name,
+          role: value.data.role,
+          noTelp: value.data.noTelp,
+        );
+      }
+    });
   }
 }

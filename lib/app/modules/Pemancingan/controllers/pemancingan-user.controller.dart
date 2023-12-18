@@ -28,6 +28,13 @@ class PemancinganUserController extends GetxController {
   String latitude = '';
   String longitude = '';
 
+  //Status For Admin
+  RxInt waiting = 0.obs;
+  RxInt approve = 0.obs;
+  RxInt reject = 0.obs;
+
+  RxString filter = 'null'.obs;
+
   DateTime? currentBackPressTime;
 
   ScrollController scrollController = ScrollController();
@@ -39,6 +46,7 @@ class PemancinganUserController extends GetxController {
   void onInit() {
     super.onInit();
     try {
+      getStatsDataPemancingan();
       scrollController.addListener(() {
         loading.value = false;
         if (scrollController.position.pixels ==
@@ -53,8 +61,8 @@ class PemancinganUserController extends GetxController {
                     homeController.currentLocation.value!.longitude.toString())
                 .then((value) => loading.value = true);
           } else {
-            getDataPemancinganForAdmin(
-                    searchController.text, '$page', paginate.toString())
+            getDataPemancinganForAdmin(filter.value, searchController.text,
+                    '$page', paginate.toString())
                 .then((value) => loading.value = true);
           }
         }
@@ -87,10 +95,10 @@ class PemancinganUserController extends GetxController {
 
   //Get Pemancingan By Admin
   Future<void> getDataPemancinganForAdmin(
-      String search, String page, String paginate) async {
+      String filter, String search, String page, String paginate) async {
     try {
       await pemancinganService
-          .getPemancinganForAdmin(search, page, paginate)
+          .getDataPemancinganForAdmin(filter, search, page, paginate)
           .then((value) => {
                 totalDataPemancingan.value = value.data.total,
                 listPemancingan.addAll(value.data.data),
@@ -124,8 +132,9 @@ class PemancinganUserController extends GetxController {
               homeController.currentLocation.value!.longitude.toString())
           .then((value) => loading.value = true);
     } else {
+      await getStatsDataPemancingan();
       await getDataPemancinganForAdmin(
-              searchController.text, '$page', paginate.toString())
+              filter.value, searchController.text, '$page', paginate.toString())
           .then((value) => loading.value = true);
     }
   }
@@ -170,5 +179,17 @@ class PemancinganUserController extends GetxController {
     double average = sum / ratings.length.toDouble();
 
     return average;
+  }
+
+  Future<void> getStatsDataPemancingan() async {
+    try {
+      await pemancinganService.getStatsPemancingan().then((value) => {
+            waiting.value = value.data.menunggu,
+            approve.value = value.data.terima,
+            reject.value = value.data.tolak
+          });
+    } catch (e) {
+      print('Error fetching Pemancingan for stats: $e');
+    }
   }
 }

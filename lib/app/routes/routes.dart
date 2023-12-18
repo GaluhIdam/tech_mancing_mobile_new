@@ -2,8 +2,9 @@ import 'package:get/get.dart';
 import 'package:tech_mancing/app/layout/view/layout.view.dart';
 import 'package:tech_mancing/app/modules/Acara/views/acara-saya.view.dart';
 import 'package:tech_mancing/app/modules/Acara/views/acara-user.view.dart';
+import 'package:tech_mancing/app/modules/Acara/views/detail-acara-admin.view.dart';
 import 'package:tech_mancing/app/modules/Acara/views/detail-acara-user.view.dart';
-import 'package:tech_mancing/app/modules/Acara/views/detail-acara-view.dart';
+import 'package:tech_mancing/app/modules/Acara/views/detail-acara.view.dart';
 import 'package:tech_mancing/app/modules/Acara/views/daftar-acara.view.dart';
 import 'package:tech_mancing/app/modules/Home/views/home.view.dart';
 import 'package:tech_mancing/app/modules/Login/views/login.view.dart';
@@ -30,6 +31,7 @@ class AppRoutes {
   static const String detailAcara = '/detail-acara';
   static const String detailAcaraUser = '/detail-acara-user';
   static const String acaraSaya = '/acara-saya';
+  static const String detailAcaraAdmin = '/detail-acara-admin';
 
   //Pemancingan Routes
   static const String pemancingan = '/pemancingan';
@@ -56,6 +58,8 @@ class AppPages {
     GetPage(name: AppRoutes.daftarAcara, page: () => DaftarAcaraView()),
     GetPage(name: AppRoutes.detailAcara, page: () => AcaraDetailView()),
     GetPage(name: AppRoutes.detailAcaraUser, page: () => DetailAcaraUserView()),
+    GetPage(
+        name: AppRoutes.detailAcaraAdmin, page: () => AcaraDetailAdminView()),
 
     //Pemancingan Routes
     GetPage(name: AppRoutes.pemancingan, page: () => PemancinganView()),

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:tech_mancing/app/layout/controllers/layout.controller.dart';
 import 'package:tech_mancing/app/modules/Acara/models/list.acara.dto.dart';
 import 'package:tech_mancing/app/modules/Acara/services/acara.service.dart';
+import 'package:tech_mancing/app/modules/Login/controllers/login.controller.dart';
 import 'package:tech_mancing/app/modules/Login/services/auth.service.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/models/list-pemancingan.dart';
 
@@ -13,6 +14,7 @@ class AcaraUserController extends GetxController {
   final AcaraService acaraService = Get.put(AcaraService());
   final LayoutController layoutController = Get.put(LayoutController());
   final AuthService authService = Get.put(AuthService());
+  final LoginController loginController = Get.put(LoginController());
 
   final GlobalKey<FormState> formDaftar = GlobalKey<FormState>();
   final TextEditingController namaController = TextEditingController();
@@ -50,19 +52,35 @@ class AcaraUserController extends GetxController {
   var page = 1;
   var paginate = 10;
 
+  RxString filter = 'null'.obs;
+
+  RxInt waiting = 0.obs;
+  RxInt approve = 0.obs;
+  RxInt reject = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
-    getDataAcara(searchController.text, '${page}', '${paginate}')
-        .then((value) => loading.value = true);
-
+    getStatsDataAcara();
+    if (loginController.userData.value.role == 'user') {
+      getDataAcara(searchController.text, '$page', '$paginate')
+          .then((value) => loading.value = true);
+    } else {
+      getAcaraAdmin(filter.value, searchController.text, page.toString(),
+          paginate.toString());
+    }
     scrollController.addListener(() {
       loading.value = false;
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
         page++;
-        getDataAcara(searchController.text, '$page', '$paginate')
-            .then((value) => loading.value = true);
+        if (loginController.userData.value.role == 'user') {
+          getDataAcara(searchController.text, '$page', '$paginate')
+              .then((value) => loading.value = true);
+        } else {
+          getAcaraAdmin(filter.value, searchController.text, page.toString(),
+              paginate.toString());
+        }
       }
     });
   }
@@ -95,7 +113,7 @@ class AcaraUserController extends GetxController {
                 value.data.pemancinganAcara.namaPemancingan,
             pemancinganSelectedId.value = value.data.idPemancingan.toString(),
             urlImage.value =
-                'http://192.168.102.118:8000/api/images-acara/${value.data.gambar}',
+                'http://192.168.163.118:8000/api/images-acara/${value.data.gambar}',
             namaController.text = value.data.namaAcara,
             descriptionController.text = value.data.deskripsi,
             startDateController.text =
@@ -123,14 +141,48 @@ class AcaraUserController extends GetxController {
   }
 
   Future<bool> backToAcara() async {
-    layoutController.acaraUserPage();
+    if (loginController.userData.value.role == 'user') {
+      layoutController.acaraSayaPage();
+    } else {
+      layoutController.acaraUserPage();
+    }
     return false;
   }
 
   void getAcaraAll() async {
     listAcara.clear();
     page = 1;
-    await getDataAcara(searchController.text, '$page', '$paginate')
-        .then((value) => loading.value = true);
+    getStatsDataAcara();
+    if (loginController.userData.value.role == 'user') {
+      getDataAcara(searchController.text, '$page', '$paginate')
+          .then((value) => loading.value = true);
+    } else {
+      getAcaraAdmin(filter.value, searchController.text, page.toString(),
+              paginate.toString())
+          .then((value) => loading.value = true);
+    }
+  }
+
+  Future<void> getStatsDataAcara() async {
+    try {
+      await acaraService.getStatsAcara().then((value) => {
+            waiting.value = value.data.menunggu,
+            approve.value = value.data.terima,
+            reject.value = value.data.tolak
+          });
+    } catch (e) {
+      print('Error fetching Acara Stats for : $e');
+    }
+  }
+
+  Future<void> getAcaraAdmin(
+      String filter, String search, String page, String paginate) async {
+    try {
+      await acaraService
+          .getAcaraDataForAdmin(filter, search, page, paginate)
+          .then((value) => {listAcara.addAll(value.data.data)});
+    } catch (e) {
+      print('Error fetching Acara Admin for : $e');
+    }
   }
 }

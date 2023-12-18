@@ -8,12 +8,14 @@ import 'package:tech_mancing/app/layout/controllers/layout.controller.dart';
 import 'package:tech_mancing/app/modules/Acara/models/create.acara.dto.dart';
 import 'package:tech_mancing/app/modules/Acara/models/list.acara.dto.dart';
 import 'package:tech_mancing/app/modules/Acara/services/acara.service.dart';
+import 'package:tech_mancing/app/modules/Login/controllers/login.controller.dart';
 import 'package:tech_mancing/app/modules/Login/services/auth.service.dart';
 
 class AcaraController extends GetxController {
   final AcaraService acaraService = Get.put(AcaraService());
   final LayoutController layoutController = Get.put(LayoutController());
   final AuthService authService = Get.put(AuthService());
+  final LoginController loginController = Get.put(LoginController());
 
   final GlobalKey<FormState> formDaftar = GlobalKey<FormState>();
   final TextEditingController namaController = TextEditingController();
@@ -21,8 +23,12 @@ class AcaraController extends GetxController {
   final TextEditingController startDateController = TextEditingController();
   final TextEditingController endDateController = TextEditingController();
   final TextEditingController grandPrizeController = TextEditingController();
+  final TextEditingController pesanController = TextEditingController();
+  RxString statusAcara = 'null'.obs;
 
   final TextEditingController searchController = TextEditingController();
+
+  RxBool statusDesc = false.obs;
 
   ScrollController scrollController = ScrollController();
 
@@ -135,19 +141,29 @@ class AcaraController extends GetxController {
     try {
       idAcaras.value = idAcara.toString();
       await acaraService.getAcaraById(idAcara).then((value) => {
+            statusAcara.value = value.data.status.toString() ?? 'null',
             pemancinganSelected.value =
                 value.data.pemancinganAcara.namaPemancingan,
             pemancinganSelectedId.value = value.data.idPemancingan.toString(),
             urlImage.value =
-                'http://192.168.102.118:8000/api/images-acara/${value.data.gambar}',
+                'http://192.168.163.118:8000/api/images-acara/${value.data.gambar}',
             namaController.text = value.data.namaAcara,
             descriptionController.text = value.data.deskripsi,
+            pesanController.text = value.data.pesan ?? '',
             startDateController.text =
                 DateFormat('yyyy-MM-dd').format(value.data.mulai),
             endDateController.text =
                 DateFormat('yyyy-MM-dd').format(value.data.akhir),
             grandPrizeController.text = value.data.grandPrize,
-            layoutController.detailAcaraPage(),
+            if (loginController.userData.value.role == 'user')
+              {
+                layoutController.detailAcaraPage(),
+              }
+            else
+              {
+                layoutController.detailAcaraAdminPage(),
+                statusDesc.value = false
+              },
             formatGrandPrize()
           });
     } catch (e) {
@@ -282,5 +298,11 @@ class AcaraController extends GetxController {
     getAcaraAll();
     clearForm();
     return false;
+  }
+
+  Future<void> updateStatusDataAcara(
+      int id, String status, String pesan) async {
+    await acaraService.updateStatusAcara(id, status, pesan);
+    ;
   }
 }

@@ -8,13 +8,18 @@ import 'package:tech_mancing/app/modules/Acara/models/detail.acara.dart';
 import 'package:tech_mancing/app/modules/Acara/models/list.acara.dto.dart';
 import 'package:tech_mancing/app/modules/Login/services/auth.service.dart';
 import 'package:http/http.dart' as http;
+import 'package:tech_mancing/app/modules/Pemancingan/models/StatsPemancingan.dto.dart';
 
 class AcaraService extends GetxService {
   final AuthService authService = Get.put(AuthService());
 
-  final String urlAcara = 'http://192.168.102.118:8000/api/acara';
-  final String urlAcaraUser = 'http://192.168.102.118:8000/api/acara-user/';
-  final String urlAcaraDetail = 'http://192.168.102.118:8000/api/acara/';
+  final String urlAcara = 'http://192.168.163.118:8000/api/acara';
+  final String urlAcaraUser = 'http://192.168.163.118:8000/api/acara-user/';
+  final String urlAcaraDetail = 'http://192.168.163.118:8000/api/acara/';
+  final String urlAcaraStats = 'http://192.168.163.118:8000/api/acara-stats';
+  final String urlAcaraAdmin = 'http://192.168.163.118:8000/api/acara-admin';
+  final String urlAcaraApprove =
+      'http://192.168.163.118:8000/api/acara-approve';
 
   //Get Acara For User
   Future<ListAcaraDto> getAcaraForUser(
@@ -159,6 +164,74 @@ class AcaraService extends GetxService {
       }
     } catch (e) {
       throw Exception('Error downloading image: $e');
+    }
+  }
+
+  Future<StatsPemancinganDto> getStatsAcara() async {
+    try {
+      final tokenData = await authService.readToken();
+
+      final uri = Uri.parse(urlAcaraStats);
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${tokenData['token']}',
+        },
+      );
+      if (response.statusCode == 200) {
+        final res = StatsPemancinganDto.fromJson(json.decode(response.body));
+        return res;
+      } else {
+        throw Exception('Failed to fetch acara data: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error to stats acara: $e');
+    }
+  }
+
+  Future<ListAcaraDto> getAcaraDataForAdmin(
+      String filter, String search, String page, String paginate) async {
+    final tokenData = await authService.readToken();
+    final uri = Uri.parse('$urlAcaraAdmin/$filter');
+    final queryParams = {
+      'search': search,
+      'page': page,
+      'paginate': paginate,
+    };
+    final response = await http.get(
+      uri.replace(queryParameters: queryParams),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${tokenData['token']}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final res = ListAcaraDto.fromJson(json.decode(response.body));
+      return res;
+    } else {
+      throw Exception(
+          'Failed to fetch acara admin data: ${response.statusCode}');
+    }
+  }
+
+  Future<bool> updateStatusAcara(int id, String status, String pesan) async {
+    final tokenData = await authService.readToken();
+
+    final uri = Uri.parse('$urlAcaraApprove/$id?status=$status&pesan=$pesan');
+    final response = await http.put(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${tokenData['token']}',
+      },
+    );
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw Exception(
+          'Failed to fetch status acara data: ${response.statusCode}');
     }
   }
 }

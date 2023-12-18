@@ -5,8 +5,9 @@ import 'package:tech_mancing/app/layout/widgets/drawer.widget.dart';
 import 'package:tech_mancing/app/modules/Acara/views/acara-saya.view.dart';
 import 'package:tech_mancing/app/modules/Acara/views/acara-user.view.dart';
 import 'package:tech_mancing/app/modules/Acara/views/daftar-acara.view.dart';
+import 'package:tech_mancing/app/modules/Acara/views/detail-acara-admin.view.dart';
 import 'package:tech_mancing/app/modules/Acara/views/detail-acara-user.view.dart';
-import 'package:tech_mancing/app/modules/Acara/views/detail-acara-view.dart';
+import 'package:tech_mancing/app/modules/Acara/views/detail-acara.view.dart';
 import 'package:tech_mancing/app/modules/Home/controllers/home.controller.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/views/daftar-pemacingan.view.dart';
 import 'package:tech_mancing/app/modules/Pemancingan/views/detail-pemancingan-for-user.dart';
@@ -58,6 +59,10 @@ class LayoutView extends StatelessWidget {
               case AppRoutes.detailAcaraUser:
                 controller.startRoute.value = false;
                 return DetailAcaraUserView();
+
+              case AppRoutes.detailAcaraAdmin:
+                controller.startRoute.value = false;
+                return AcaraDetailAdminView();
 
               case AppRoutes.daftarAcara:
                 controller.startRoute.value = false;

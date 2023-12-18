@@ -46,6 +46,7 @@ class Data {
   DateTime mulai;
   DateTime akhir;
   dynamic status;
+  dynamic pesan;
   DateTime createdAt;
   DateTime updatedAt;
   DatumListPemancingan pemancinganAcara;
@@ -61,6 +62,7 @@ class Data {
     required this.mulai,
     required this.akhir,
     required this.status,
+    required this.pesan,
     required this.createdAt,
     required this.updatedAt,
     required this.pemancinganAcara,
@@ -77,6 +79,7 @@ class Data {
         mulai: DateTime.parse(json["mulai"]),
         akhir: DateTime.parse(json["akhir"]),
         status: json["status"],
+        pesan: json["pesan"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
         pemancinganAcara:

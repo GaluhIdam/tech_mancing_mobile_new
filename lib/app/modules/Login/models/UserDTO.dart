@@ -45,9 +45,6 @@ class Data {
   String name;
   String noTelp;
   String email;
-  dynamic emailVerifiedAt;
-  DateTime createdAt;
-  DateTime updatedAt;
 
   Data({
     required this.id,
@@ -55,9 +52,6 @@ class Data {
     required this.name,
     required this.noTelp,
     required this.email,
-    required this.emailVerifiedAt,
-    required this.createdAt,
-    required this.updatedAt,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -66,9 +60,6 @@ class Data {
         name: json["name"],
         noTelp: json["no_telp"],
         email: json["email"],
-        emailVerifiedAt: json["email_verified_at"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -77,9 +68,6 @@ class Data {
         "name": name,
         "no_telp": noTelp,
         "email": email,
-        "email_verified_at": emailVerifiedAt,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
       };
 }
 

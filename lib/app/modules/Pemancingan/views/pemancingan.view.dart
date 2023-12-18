@@ -22,50 +22,208 @@ class PemancinganView extends StatelessWidget {
           child: Scaffold(
               appBar: AppBar(
                 elevation: 0.0,
-                toolbarHeight: 100.0,
+                toolbarHeight: loginController.userData.value.role == 'admin'
+                    ? 130.0
+                    : 100.0,
                 backgroundColor: Colors.transparent,
                 title: Container(
-                  margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
-                  child: TextFormField(
-                    keyboardType: TextInputType.text,
-                    controller: pemancinganUserController.searchController,
-                    onEditingComplete: () async {
-                      pemancinganUserController.loading.value = false;
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      pemancinganUserController.listPemancingan.clear();
-                      if (loginController.userData.value.role == 'user') {
-                        await pemancinganUserController
-                            .getDataPemancinganForUser(
-                                pemancinganUserController.searchController.text,
-                                pemancinganUserController.page.toString(),
-                                pemancinganUserController.paginate.toString(),
-                                homeController.currentLocation.value!.latitude
-                                    .toString(),
-                                homeController.currentLocation.value!.longitude
-                                    .toString())
-                            .then((value) =>
-                                pemancinganUserController.loading.value = true);
-                      } else {
-                        await pemancinganUserController
-                            .getDataPemancinganForAdmin(
-                                pemancinganUserController.searchController.text,
-                                pemancinganUserController.page.toString(),
-                                pemancinganUserController.paginate.toString())
-                            .then((value) =>
-                                pemancinganUserController.loading.value = true);
-                      }
-                    },
-                    decoration: const InputDecoration(
-                        labelText: "cari pemancingan terdekat...",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                    margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+                    child: Column(
+                      children: [
+                        if (loginController.userData.value.role == 'admin')
+                          Container(
+                              margin: const EdgeInsets.only(top: 5, bottom: 5),
+                              child: Obx(
+                                () => Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                          left: 2, right: 2),
+                                      child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                pemancinganUserController
+                                                            .filter.value ==
+                                                        'null'
+                                                    ? Color.fromARGB(
+                                                        255, 140, 145, 0)
+                                                    : const Color.fromRGBO(
+                                                        215, 223, 0, 1),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            pemancinganUserController
+                                                .loading.value = false;
+                                            pemancinganUserController
+                                                .filter.value = 'null';
+                                            pemancinganUserController
+                                                .listPemancingan
+                                                .clear();
+                                            pemancinganUserController
+                                                .getDataPemancinganForAdmin(
+                                                    'null',
+                                                    pemancinganUserController
+                                                        .searchController.text,
+                                                    pemancinganUserController
+                                                        .page
+                                                        .toString(),
+                                                    pemancinganUserController
+                                                        .paginate
+                                                        .toString())
+                                                .then((value) =>
+                                                    pemancinganUserController
+                                                        .loading.value = true);
+                                          },
+                                          child: Text(
+                                              "${pemancinganUserController.waiting.value.toString()} Menunggu Persetujuan")),
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                          left: 2, right: 2),
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            pemancinganUserController
+                                                .loading.value = false;
+                                            pemancinganUserController
+                                                .filter.value = '1';
+                                            pemancinganUserController
+                                                .listPemancingan
+                                                .clear();
+                                            pemancinganUserController
+                                                .getDataPemancinganForAdmin(
+                                                    '1',
+                                                    pemancinganUserController
+                                                        .searchController.text,
+                                                    pemancinganUserController
+                                                        .page
+                                                        .toString(),
+                                                    pemancinganUserController
+                                                        .paginate
+                                                        .toString())
+                                                .then((value) =>
+                                                    pemancinganUserController
+                                                        .loading.value = true);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                pemancinganUserController
+                                                            .filter.value ==
+                                                        '1'
+                                                    ? const Color.fromARGB(
+                                                        255, 2, 114, 0)
+                                                    : const Color.fromRGBO(
+                                                        3, 165, 0, 1),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          child: Text(
+                                              "${pemancinganUserController.approve.value.toString()} Disetujui")),
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                          left: 2, right: 2),
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            pemancinganUserController
+                                                .loading.value = false;
+                                            pemancinganUserController
+                                                .filter.value = '0';
+                                            pemancinganUserController
+                                                .listPemancingan
+                                                .clear();
+                                            pemancinganUserController
+                                                .getDataPemancinganForAdmin(
+                                                    '0',
+                                                    pemancinganUserController
+                                                        .searchController.text,
+                                                    pemancinganUserController
+                                                        .page
+                                                        .toString(),
+                                                    pemancinganUserController
+                                                        .paginate
+                                                        .toString())
+                                                .then((value) =>
+                                                    pemancinganUserController
+                                                        .loading.value = true);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                pemancinganUserController
+                                                            .filter.value ==
+                                                        '0'
+                                                    ? Color.fromARGB(
+                                                        255, 112, 0, 0)
+                                                    : const Color.fromRGBO(
+                                                        177, 0, 0, 1),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          child: Text(
+                                              "${pemancinganUserController.reject.value.toString()} DiTolak")),
+                                    )
+                                  ],
+                                ),
+                              )),
+                        TextFormField(
+                          keyboardType: TextInputType.text,
+                          controller:
+                              pemancinganUserController.searchController,
+                          onEditingComplete: () async {
+                            pemancinganUserController.loading.value = false;
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            pemancinganUserController.listPemancingan.clear();
+                            if (loginController.userData.value.role == 'user') {
+                              await pemancinganUserController
+                                  .getDataPemancinganForUser(
+                                      pemancinganUserController
+                                          .searchController.text,
+                                      pemancinganUserController.page.toString(),
+                                      pemancinganUserController.paginate
+                                          .toString(),
+                                      homeController
+                                          .currentLocation.value!.latitude
+                                          .toString(),
+                                      homeController
+                                          .currentLocation.value!.longitude
+                                          .toString())
+                                  .then((value) => pemancinganUserController
+                                      .loading.value = true);
+                            } else {
+                              await pemancinganUserController
+                                  .getDataPemancinganForAdmin(
+                                      pemancinganUserController.filter.value,
+                                      pemancinganUserController
+                                          .searchController.text,
+                                      pemancinganUserController.page.toString(),
+                                      pemancinganUserController.paginate
+                                          .toString())
+                                  .then((value) => pemancinganUserController
+                                      .loading.value = true);
+                            }
+                          },
+                          decoration: const InputDecoration(
+                              labelText: "cari pemancingan terdekat...",
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                              ),
+                              hintText: "e.g pemancingan pamulang 86"),
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        hintText: "e.g pemancingan pamulang 86"),
-                  ),
-                ),
+                      ],
+                    )),
               ),
               body: RefreshIndicator(
                   child: ListView(children: [
@@ -95,7 +253,7 @@ class PemancinganView extends StatelessWidget {
                                     CardForUserWidget(
                                       pesan: pemancingan.pesan,
                                       image:
-                                          'http://192.168.102.118:8000/api/images-pemancingan/${pemancingan.image}',
+                                          'http://192.168.163.118:8000/api/images-pemancingan/${pemancingan.image}',
                                       title: pemancingan.namaPemancingan,
                                       alamat: pemancingan.alamat,
                                       mulai: pemancingan.buka,
@@ -185,6 +343,8 @@ class PemancinganView extends StatelessWidget {
                                               pemancinganUserController
                                                   .getDataPemancinganForAdmin(
                                                       pemancinganUserController
+                                                          .filter.value,
+                                                      pemancinganUserController
                                                           .searchController
                                                           .text,
                                                       pemancinganUserController
@@ -231,8 +391,10 @@ class PemancinganView extends StatelessWidget {
                           .then((value) =>
                               pemancinganUserController.loading.value = true);
                     } else {
+                      await pemancinganUserController.getStatsDataPemancingan();
                       await pemancinganUserController
                           .getDataPemancinganForAdmin(
+                              pemancinganUserController.filter.value,
                               pemancinganUserController.searchController.text,
                               pemancinganUserController.page.toString(),
                               pemancinganUserController.paginate.toString())
